@@ -16,8 +16,9 @@
       "description": "Description for xyz.yuanjin.nas.host."
     },
     {
-      "name": "xyz.yuanjin.nas.protect-file-pattern",
+      "name": "xyz.yuanjin.nas.protect-file-regular.regexp",
       "type": "java.lang.String",
-      "description": "Description for xyz.yuanjin.nas.protect-file-pattern."
+      "description": "Description for xyz.yuanjin.nas.protect-file-regular.regexp."
     }
-  ] }
+  ]
+}

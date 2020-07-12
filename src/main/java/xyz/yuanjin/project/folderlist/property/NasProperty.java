@@ -27,7 +27,7 @@ public class NasProperty {
     @Value("#{'${xyz.yuanjin.nas.listen-drivers}'.split('\\s+')}")
     private String[] nasListenFileList;
 
-    @Value("#{'${xyz.yuanjin.nas.protect-file-pattern}'.split('\\s+')}")
+    @Value("#{'${xyz.yuanjin.nas.protect-file-regular.regexp}'.split('\\s+')}")
     private String[] nasProtectFileRules;
 
     private Pattern[] nasProtectFilePatterns;
