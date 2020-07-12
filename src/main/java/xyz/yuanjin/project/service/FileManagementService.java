@@ -14,7 +14,7 @@ import java.util.List;
  * @author yuanjin
  */
 @Service
-public class NasService {
+public class FileManagementService {
 
     public File newFile(String path) {
         return new File(SystemUtil.systemProperty().getNasListenFileList()[0].concat(path));

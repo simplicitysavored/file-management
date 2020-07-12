@@ -11,7 +11,7 @@ import java.util.regex.Pattern;
  */
 @Data
 @Component
-public class NasProperty {
+public class SystemProperty {
     @Value("${server.servlet.context-path}")
     private String contextPath;
 

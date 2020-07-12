@@ -3,7 +3,7 @@ package xyz.yuanjin.project.controller;
 import com.alibaba.fastjson.JSON;
 import org.springframework.web.bind.annotation.*;
 import xyz.yuanjin.project.pojo.FolderBean;
-import xyz.yuanjin.project.service.NasService;
+import xyz.yuanjin.project.service.FileManagementService;
 import xyz.yuanjin.project.util.SystemUtil;
 
 import javax.annotation.Resource;
@@ -17,7 +17,7 @@ import java.util.List;
 @RestController
 public class LoadFileRestController {
     @Resource
-    private NasService nasService;
+    private FileManagementService fileManagementService;
 
     @GetMapping(value = "/file", produces = "application/json;charset=utf8")
     public String file(@RequestParam(value = "path", required = false) String path) throws Exception {
@@ -27,7 +27,7 @@ public class LoadFileRestController {
                 throw new Exception("这个不是文件夹");
             }
 
-            FolderBean folderBean = nasService.loadFolder(file);
+            FolderBean folderBean = fileManagementService.loadFolder(file);
 
             return JSON.toJSONString(folderBean);
         }
@@ -45,7 +45,7 @@ public class LoadFileRestController {
                 throw new Exception("这个不是文件夹");
             }
 
-            FolderBean folderBean = nasService.loadFolder(file);
+            FolderBean folderBean = fileManagementService.loadFolder(file);
 
             listenDrivers.add(folderBean);
         }

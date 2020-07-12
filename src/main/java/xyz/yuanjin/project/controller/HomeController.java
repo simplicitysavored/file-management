@@ -12,7 +12,7 @@ import xyz.yuanjin.project.common.util.ResponseUtil;
 import xyz.yuanjin.project.common.util.UnitUtils;
 import xyz.yuanjin.project.pojo.BaseBean;
 import xyz.yuanjin.project.pojo.FolderBean;
-import xyz.yuanjin.project.service.NasService;
+import xyz.yuanjin.project.service.FileManagementService;
 import xyz.yuanjin.project.util.SystemUtil;
 
 import javax.annotation.Resource;
@@ -27,7 +27,7 @@ import java.util.Comparator;
 @Controller
 public class HomeController {
     @Resource
-    private NasService nasService;
+    private FileManagementService fileManagementService;
 
     @GetMapping("/")
     public String home(Model model) {
@@ -44,7 +44,7 @@ public class HomeController {
             throw new Exception("这个不是文件夹");
         }
 
-        FolderBean folderBean = nasService.loadFolder(file);
+        FolderBean folderBean = fileManagementService.loadFolder(file);
 
         folderBean.getFiles().sort(Comparator.comparing(BaseBean::getName));
 
@@ -86,7 +86,7 @@ public class HomeController {
     ) {
         File file = new File(path);
 
-        if (nasService.isProtectFile(file)) {
+        if (fileManagementService.isProtectFile(file)) {
             return ResponseUtil.errorString("文件受保护，不可删除");
         }
 

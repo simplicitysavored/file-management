@@ -4,7 +4,7 @@ import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.stereotype.Component;
-import xyz.yuanjin.project.property.NasProperty;
+import xyz.yuanjin.project.property.SystemProperty;
 
 import java.io.File;
 import java.util.regex.Pattern;
@@ -16,8 +16,8 @@ import java.util.regex.Pattern;
 public class SystemUtil implements ApplicationContextAware {
     private static ApplicationContext APPLICATION_CONTEXT;
 
-    public static NasProperty systemProperty() {
-        return APPLICATION_CONTEXT.getBean(NasProperty.class);
+    public static SystemProperty systemProperty() {
+        return APPLICATION_CONTEXT.getBean(SystemProperty.class);
     }
 
     public static boolean isProtectFile(File file) {

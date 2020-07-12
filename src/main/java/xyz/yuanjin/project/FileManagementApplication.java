@@ -9,10 +9,10 @@ import org.springframework.web.servlet.config.annotation.EnableWebMvc;
  */
 @EnableWebMvc
 @SpringBootApplication
-public class FolderListApplication {
+public class FileManagementApplication {
 
     public static void main(String[] args) {
-        SpringApplication.run(FolderListApplication.class, args);
+        SpringApplication.run(FileManagementApplication.class, args);
     }
 
 }

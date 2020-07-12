@@ -3,6 +3,7 @@ package xyz.yuanjin.project.pojo;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.springframework.util.Assert;
+import xyz.yuanjin.project.common.consts.SymbolConst;
 import xyz.yuanjin.project.common.util.UnitUtils;
 
 import java.io.File;
@@ -25,7 +26,7 @@ public class FileBean extends BaseBean {
         FileBean bean = (FileBean) BaseBean.initialByFile(FileBean.class, file);
         bean.setByteSize(file.length());
         bean.setByteSizeDesc(UnitUtils.convertTrafficAuto(file.length()));
-        if (file.getName().contains(".")) {
+        if (file.getName().contains(SymbolConst.DOT)) {
             bean.setSuffix(file.getName().substring(file.getName().lastIndexOf(".")));
         }
         return bean;
