@@ -11,8 +11,8 @@
     <groupId>xyz.yuanjin.project</groupId>
     <artifactId>folder-list</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>folder-list</name>
-    <description>Demo project for Spring Boot</description>
+    <name>file-management</name>
+    <description>管理局域网文件</description>
 
     <properties>
         <java.version>1.8</java.version>
