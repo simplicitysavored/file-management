@@ -1,0 +1,23 @@
+{
+  "properties": [
+    {
+      "name": "xyz.yuanjin.nas.listen-drivers",
+      "type": "java.lang.String",
+      "description": "Description for xyz.yuanjin.nas.listen-drivers."
+    },
+    {
+      "name": "xyz.yuanjin.nas.protocol",
+      "type": "java.lang.String",
+      "description": "Description for xyz.yuanjin.nas.protocol."
+    },
+    {
+      "name": "xyz.yuanjin.nas.host",
+      "type": "java.lang.String",
+      "description": "Description for xyz.yuanjin.nas.host."
+    },
+    {
+      "name": "xyz.yuanjin.nas.protect-file-pattern",
+      "type": "java.lang.String",
+      "description": "Description for xyz.yuanjin.nas.protect-file-pattern."
+    }
+  ] }

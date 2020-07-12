@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title th:text="${folderBean.name}">Title</title>
+    <link rel="stylesheet" href="/static/bootstrap/css/bootstrap.css">
+    <style>
+        .file-list-table {
+
+        }
+
+        .file-list-table-th {
+            word-wrap: break-word;
+            word-break: break-all;
+        }
+
+        .file-list-table-td {
+            word-wrap: break-word;
+            word-break: break-all;
+        }
+    </style>
+</head>
+<body>
+<div id="testBar"></div>
+
+<div class="container">
+    <a class="btn btn-default" href="/">首页</a>
+    <a class="btn btn-default" th:href="${folderBean.previousUrl}">上一级</a>
+    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#myModal">新建</button>
+    <button type="button" class="btn btn-info" data-toggle="modal" data-target="#uploadModal">单文件上传</button>
+    <button type="button" class="btn btn-info" data-toggle="modal" data-target="#uploadMultiModal">多文件上传</button>
+    <button type="button" class="btn btn-info" data-toggle="modal" data-target="#uploadMultiAdvanceModal">优化多文件上传
+    </button>
+    <div class="panel panel-default">
+        <!-- Default panel contents -->
+        <div class="panel-heading">
+            <!-- 当前位置 -->
+            <input type="hidden" id="CURRENT_POSITION_FOLDER" th:value="${CURRENT_POSITION_FOLDER}" aria-label="当前位置">
+            <span th:text="'当前位置：'+${folderBean.absolutePath}"></span>
+        </div>
+
+        <!-- Table -->
+        <table class="table">
+            <tr>
+                <th style="width: 300px;">文件名</th>
+                <th>类型</th>
+                <th>大小</th>
+                <th>操作</th>
+            </tr>
+
+            <tr th:each="file : ${folderBean.files}" th:if="${!file.isHidden()}">
+                <td>
+                    <!-- 文件名 -->
+                    <a th:if="${file.folder}" th:href="@{/nas(path=${file.absolutePath})}" th:text="${file.name}"></a>
+                    <span th:if="${!file.folder}" th:text="${file.name}"></span>
+                </td>
+                <td>
+                    <!-- 类型 -->
+                    <span th:if="${file.isFolder()}" th:text="文件夹"></span>
+                    <span th:if="${!file.isFolder()}" th:text="文件"></span>
+                </td>
+                <td>
+                    <!-- 大小 -->
+                    <span th:if="${!file.isFolder()}" th:text="${file.byteSizeDesc}"></span>
+                    <span th:if="${file.isFolder()}">-</span>
+                </td>
+                <td>
+                    <span th:if="${file.isProtect()}">文件受保护，不可编辑</span>
+                    <button th:if="${!file.isProtect()}" type="button" class="btn btn-danger btn-sm"
+                            th:onclick="[deleteFile([[${file.absolutePath}]])]">删除
+                    </button>
+                    <a th:if="${file.isVideo()}" th:href="@{/jumpToVideo(filePath=${file.absolutePath})}">播放</a>
+                </td>
+            </tr>
+        </table>
+    </div>
+
+
+    <!-- Modal -->
+    <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                            aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title" id="myModalLabel">Modal title</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="input-group">
+                        <span class="input-group-addon" id="basic-addon1">名称：</span>
+                        <input type="text" class="form-control" id="newFolderName" placeholder="文件夹名称"
+                               aria-label="文件夹名称">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                    <button type="button" class="btn btn-primary" onclick="createFolder()">保存</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- uploadModal -->
+    <div class="modal fade" id="uploadModal" tabindex="-1" role="dialog" aria-labelledby="uploadModal">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                            aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title" id="uploadModalLabel">单文件上传</h4>
+                </div>
+                <div class="modal-body">
+                    <form id="uploadForm">
+                        <div class="input-group">
+                            <span class="input-group-addon">选择文件：</span>
+                            <input type="file" class="form-control" id="uploadFile" name="uploadFile" placeholder="文件上传"
+                                   aria-label="文件上传">
+                        </div>
+                    </form>
+                    <div id="MyProcessBar"></div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                    <button type="button" class="btn btn-primary" onclick="uploadFileToServer(this)"
+                            data-loading-text="正在上传...">开始上传
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- uploadMultiModal -->
+    <div class="modal fade" id="uploadMultiModal" tabindex="-1" role="dialog" aria-labelledby="uploadMultiModal">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                            aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title">多文件上传</h4>
+                </div>
+                <div class="modal-body">
+                    <form id="uploadMultiForm">
+                        <div class="input-group">
+                            <span class="input-group-addon">选择多个文件：</span>
+                            <input type="file" class="form-control" id="uploadMultiFile" multiple="multiple"
+                                   name="uploadFile" placeholder="文件上传"
+                                   aria-label="文件上传">
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                    <button type="button" class="btn btn-primary" onclick="uploadMultiFileToServer(this)"
+                            data-loading-text="正在上传...">开始上传
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- uploadMultiAdvanceModal -->
+    <div class="modal fade" id="uploadMultiAdvanceModal" tabindex="-1" role="dialog"
+         aria-labelledby="uploadMultiAdvanceModal">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">优化多文件上传</h4>
+                </div>
+                <div class="modal-body">
+                    <form id="uploadMultiAdvanceForm">
+                        <div class="input-group">
+                            <span class="input-group-addon">选择多个文件：</span>
+                            <input type="file" class="form-control" id="uploadMultiAdvanceFile" multiple="multiple"
+                                   name="uploadFile" placeholder="文件上传"
+                                   aria-label="文件上传">
+                        </div>
+                    </form>
+                    <div>
+                        <span class="upload-compress">0/0</span>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                    <button type="button" class="btn btn-primary" onclick="uploadMultiFileAdvanceToServer(this)"
+                            data-loading-text="正在上传...">开始上传
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+</div>
+</body>
+<script type="text/javascript" src="/static/js/jquery-2.1.1.min.js"></script>
+<script type="text/javascript" src="/static/bootstrap/js/bootstrap.js"></script>
+<script type="text/javascript" src="/static/js/sweet-alert.min.js"></script>
+
+<script type="text/javascript" src="/static/js/jinn-common.js"></script>
+<script type="text/javascript">
+    let DOM_NEW_FOLDER_NAME;
+    let DOM_CURRENT_POSITION_FOLDER;
+    let DOM_MY_MODAL;
+    $(function () {
+        DOM_NEW_FOLDER_NAME = $("#newFolderName");
+        DOM_CURRENT_POSITION_FOLDER = $('#CURRENT_POSITION_FOLDER');
+        DOM_MY_MODAL = $("#myModal");
+    });
+
+    function createFolder() {
+        let requestData = {
+            position: DOM_CURRENT_POSITION_FOLDER.val(),
+            name: DOM_NEW_FOLDER_NAME.val().trim()
+        };
+        YJ_COMM.ajaxAsyncPostJson({
+            url: '/create',
+            data: requestData,
+            successFnc: function (data) {
+                console.log(data);
+                if (data.success) {
+                    console.log(data.success);
+                    window.location.reload();
+                } else {
+                    alert(data.message);
+                }
+
+            }
+        });
+    }
+
+    function deleteFile(path) {
+        swal({
+            title: "确认删除?",
+            text: '文件：' + path,
+            icon: "warning",
+            buttons: ["取消", "确认"],
+            dangerMode: true,
+        }).then((willDelete) => {
+            console.log(willDelete);
+            if (willDelete) {
+                YJ_COMM.ajaxAsyncPostJson({
+                    url: '/delete',
+                    data: {
+                        path: path
+                    },
+                    successFnc: function (data) {
+                        console.log(data);
+                        if (data.success) {
+                            console.log(data.success);
+                            window.location.reload();
+                        } else {
+                            alert(data.message);
+                        }
+
+                    }
+                })
+            } else {
+                //swal("Your imaginary file is safe!");
+            }
+        });
+    }
+
+    function uploadFileToServer(btn) {
+
+        let myData = $('#uploadFile')[0].files[0];
+
+
+
+        let myBar = YJ_COMM.processBar.initProcess({
+            dom: 'MyProcessBar',
+            max: myData.size,
+            min: 0,
+            now: 0
+        });
+
+        YJ_COMM.uploadFileSplit({
+            processBarDom: myBar,
+            fileName: myData.name,
+            position: DOM_CURRENT_POSITION_FOLDER.val(),
+            file: myData,
+            blockSize: 1024 * 1024 * 10,
+            completed: function () {
+                window.location.reload();
+            }
+        });
+
+        //let formData = new FormData();
+//
+        //formData.set("position", DOM_CURRENT_POSITION_FOLDER.val());
+        //formData.append("uploadFile", myData);
+        //$.ajax({
+        //    async: true,
+        //    url: "/upload",
+        //    type: "POST",
+        //    data: formData,
+        //    processData: false, // 告诉jQuery不要去处理发送的数据
+        //    contentType: false, // 告诉jQuery不要去设置Content-Type请求头
+        //    success: function (data) {
+        //        if (data.statusCode === 200) {
+        //            console.log("上传成功！");
+        //            window.location.reload();
+        //        }
+        //    }
+        //});
+    }
+
+    function uploadMultiFileToServer(btn) {
+        $(btn).button('loading');
+
+        let files = $('#uploadMultiFile')[0].files;
+
+        let formData = new FormData();
+
+        formData.set("position", DOM_CURRENT_POSITION_FOLDER.val());
+
+        let i = 0, len = files.length;
+        for (; i < len; i++) {
+            formData.append('uploadFile', files[i]);
+        }
+        $.ajax({
+            async: true,
+            url: "/uploadBatch",
+            type: "POST",
+            data: formData,
+            processData: false, // 告诉jQuery不要去处理发送的数据
+            contentType: false, // 告诉jQuery不要去设置Content-Type请求头
+            success: function (data) {
+                if (data.statusCode === 200) {
+                    console.log("上传成功！");
+                    window.location.reload();
+                }
+            }
+        });
+    }
+
+    function uploadMultiFileAdvanceToServer(btn) {
+        $(btn).button('loading');
+        let UPLOAD_STATUS = {};
+        let files = $('#uploadMultiAdvanceFile')[0].files;
+
+        let DOM_UPLOAD_COMPRESS = $('#uploadMultiAdvanceModal').find('.upload-compress');
+
+
+        DOM_UPLOAD_COMPRESS.text("0/" + files.length);
+
+        for (let i = 0; i < files.length; i++) {
+            let fileName = files[i].name;
+            UPLOAD_STATUS[fileName] = false;
+            YJ_COMM.uploadFile({
+                file: files[i],
+                url: '/upload',
+                position: DOM_CURRENT_POSITION_FOLDER.val(),
+                success: function (data) {
+                    UPLOAD_STATUS[fileName] = true;
+                    let flag = 0;
+                    for (let tmp in UPLOAD_STATUS) {
+                        if (UPLOAD_STATUS[tmp]) {
+                            ++flag;
+                        }
+                    }
+                    DOM_UPLOAD_COMPRESS.text(flag + "/" + files.length);
+                    if (files.length === flag) {
+                        $(btn).button('reset');
+                    }
+                    console.log(files[i].name + " - " + data.statusCode);
+                }
+            })
+        }
+    }
+</script>
+</html>

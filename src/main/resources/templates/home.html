@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>个人文件管理</title>
+    <link rel="stylesheet" th:href="@{/static/bootstrap/css/bootstrap.css}">
+    <style type="text/css">
+        .driver-list {
+            display: flex;
+            list-style: none;
+        }
+
+        .driver-list .driver-item {
+            margin: 0 10px;
+        }
+
+        .nas-header {
+            border: 1px #0f0f0f solid;
+        }
+
+        .nas-body {
+            border: 1px #0f0f0f solid;
+            margin-top: 10px;
+
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="col-sm-12 nas-header">
+        <h3>个人文件管理</h3>
+        <ul class="driver-list">
+            <li th:each="driver : ${listenDrivers}" class="driver-item">
+<!--                <a th:onclick="loadDriver([[${driver}]])" th:text="${driver}"></a>-->
+                                <a th:href="@{/nas(path=${driver})}" th:text="${driver}" class="btn btn-info"></a>
+            </li>
+        </ul>
+    </div>
+</div>
+</body>
+<script type="text/javascript" src="/static/js/jquery-2.1.1.min.js"></script>
+<script type="text/javascript">
+    function loadDriver($driver) {
+        $.get('http://localhost:8888/nas?path=' + encodeURI($driver), function (data) {
+            $('.nas-body').html(data);
+        });
+        // $('.nas-body').find('iframe').attr('src', 'http://localhost:8888/nas?path=' + encodeURI($driver));
+        // $.ajax({
+        //     url: 'http://localhost:8888/nas',
+        //     type: 'GET',
+        //     dataType: 'json',
+        //     data: {"path": $driver},
+        //     success: function (mes) {
+        //         console.log(mes.code);
+        //     },
+        //     error: function (mes) {
+        //         console.log(mes);
+        //     }
+        // })
+    }
+
+</script>
+</html>

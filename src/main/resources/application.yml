@@ -1,0 +1,30 @@
+server:
+  port: 8888
+  servlet:
+    context-path: /
+  tomcat:
+    # 4G
+    max-http-form-post-size: 4294967296
+  jetty:
+    max-http-form-post-size: 4294967296
+spring:
+  resources:
+    static-locations: /static/
+  thymeleaf:
+    encoding: utf-8
+    # 实现热部署
+    cache: false
+  servlet:
+    multipart:
+      # 4G
+      max-file-size: 4294967296
+      max-request-size: 4294967296
+
+xyz:
+  yuanjin:
+    nas:
+      listen-drivers: F:\\ E:\\
+      protocol: http://
+      host: 192.168.1.104
+      # 使用正则匹配全路径；多个规则用空格分隔
+      protect-file-pattern: ^F:\\+\d{3}_.*$  .*README\.md$
