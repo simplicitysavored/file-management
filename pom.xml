@@ -9,7 +9,7 @@
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>xyz.yuanjin.project</groupId>
-    <artifactId>folder-list</artifactId>
+    <artifactId>file-management</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <name>file-management</name>
     <description>管理局域网文件</description>
