@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
 <head>
     <meta charset="UTF-8">
     <title th:text="${folderBean.name}">Title</title>
@@ -43,7 +44,7 @@
         <table class="table">
             <tr>
                 <th style="width: 300px;">文件名</th>
-                <th>类型</th>
+<!--                <th>类型</th>-->
                 <th>大小</th>
                 <th>操作</th>
             </tr>
@@ -54,11 +55,11 @@
                     <a th:if="${file.folder}" th:href="@{/nas(path=${file.absolutePath})}" th:text="${file.name}"></a>
                     <span th:if="${!file.folder}" th:text="${file.name}"></span>
                 </td>
-                <td>
-                    <!-- 类型 -->
+               <!-- <td>
+                    &lt;!&ndash; 类型 &ndash;&gt;
                     <span th:if="${file.isFolder()}" th:text="文件夹"></span>
                     <span th:if="${!file.isFolder()}" th:text="文件"></span>
-                </td>
+                </td>-->
                 <td>
                     <!-- 大小 -->
                     <span th:if="${!file.isFolder()}" th:text="${file.byteSizeDesc}"></span>
