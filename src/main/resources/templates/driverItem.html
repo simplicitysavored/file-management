@@ -5,21 +5,6 @@
     <meta charset="UTF-8">
     <title th:text="${folderBean.name}">Title</title>
     <link rel="stylesheet" href="/static/bootstrap/css/bootstrap.css">
-    <style>
-        .file-list-table {
-
-        }
-
-        .file-list-table-th {
-            word-wrap: break-word;
-            word-break: break-all;
-        }
-
-        .file-list-table-td {
-            word-wrap: break-word;
-            word-break: break-all;
-        }
-    </style>
 </head>
 <body>
 <div id="testBar"></div>
@@ -29,9 +14,6 @@
     <a class="btn btn-default" th:href="${folderBean.previousUrl}">上一级</a>
     <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#myModal">新建</button>
     <button type="button" class="btn btn-info" data-toggle="modal" data-target="#uploadModal">单文件上传</button>
-    <button type="button" class="btn btn-info" data-toggle="modal" data-target="#uploadMultiModal">多文件上传</button>
-    <button type="button" class="btn btn-info" data-toggle="modal" data-target="#uploadMultiAdvanceModal">优化多文件上传
-    </button>
     <div class="panel panel-default">
         <!-- Default panel contents -->
         <div class="panel-heading">
@@ -44,7 +26,7 @@
         <table class="table">
             <tr>
                 <th style="width: 300px;">文件名</th>
-<!--                <th>类型</th>-->
+                <!--                <th>类型</th>-->
                 <th>大小</th>
                 <th>操作</th>
             </tr>
@@ -55,21 +37,23 @@
                     <a th:if="${file.folder}" th:href="@{/nas(path=${file.absolutePath})}" th:text="${file.name}"></a>
                     <span th:if="${!file.folder}" th:text="${file.name}"></span>
                 </td>
-               <!-- <td>
-                    &lt;!&ndash; 类型 &ndash;&gt;
-                    <span th:if="${file.isFolder()}" th:text="文件夹"></span>
-                    <span th:if="${!file.isFolder()}" th:text="文件"></span>
-                </td>-->
+                <!-- <td>
+                     &lt;!&ndash; 类型 &ndash;&gt;
+                     <span th:if="${file.isFolder()}" th:text="文件夹"></span>
+                     <span th:if="${!file.isFolder()}" th:text="文件"></span>
+                 </td>-->
                 <td>
                     <!-- 大小 -->
                     <span th:if="${!file.isFolder()}" th:text="${file.byteSizeDesc}"></span>
                     <span th:if="${file.isFolder()}">-</span>
                 </td>
                 <td>
-                    <span th:if="${file.isProtect()}">文件受保护，不可编辑</span>
+                    <span th:if="${file.isProtect()}">受保护</span>
                     <button th:if="${!file.isProtect()}" type="button" class="btn btn-danger btn-sm"
                             th:onclick="[deleteFile([[${file.absolutePath}]])]">删除
                     </button>
+                    <a th:if="${!file.isFolder()}" type="button" class="btn btn-info btn-sm"
+                       th:href="@{/download(path=${file.absolutePath})}">下载</a>
                     <a th:if="${file.isVideo()}" th:href="@{/jumpToVideo(filePath=${file.absolutePath})}">播放</a>
                 </td>
             </tr>
@@ -77,7 +61,7 @@
     </div>
 
 
-    <!-- Modal -->
+    <!-- 创建文件夹 Modal -->
     <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
@@ -102,7 +86,7 @@
     </div>
 
 
-    <!-- uploadModal -->
+    <!-- 文件上传 Modal -->
     <div class="modal fade" id="uploadModal" tabindex="-1" role="dialog" aria-labelledby="uploadModal">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
@@ -131,69 +115,6 @@
         </div>
     </div>
 
-
-    <!-- uploadMultiModal -->
-    <div class="modal fade" id="uploadMultiModal" tabindex="-1" role="dialog" aria-labelledby="uploadMultiModal">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
-                            aria-hidden="true">&times;</span></button>
-                    <h4 class="modal-title">多文件上传</h4>
-                </div>
-                <div class="modal-body">
-                    <form id="uploadMultiForm">
-                        <div class="input-group">
-                            <span class="input-group-addon">选择多个文件：</span>
-                            <input type="file" class="form-control" id="uploadMultiFile" multiple="multiple"
-                                   name="uploadFile" placeholder="文件上传"
-                                   aria-label="文件上传">
-                        </div>
-                    </form>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
-                    <button type="button" class="btn btn-primary" onclick="uploadMultiFileToServer(this)"
-                            data-loading-text="正在上传...">开始上传
-                    </button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-
-    <!-- uploadMultiAdvanceModal -->
-    <div class="modal fade" id="uploadMultiAdvanceModal" tabindex="-1" role="dialog"
-         aria-labelledby="uploadMultiAdvanceModal">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h4 class="modal-title">优化多文件上传</h4>
-                </div>
-                <div class="modal-body">
-                    <form id="uploadMultiAdvanceForm">
-                        <div class="input-group">
-                            <span class="input-group-addon">选择多个文件：</span>
-                            <input type="file" class="form-control" id="uploadMultiAdvanceFile" multiple="multiple"
-                                   name="uploadFile" placeholder="文件上传"
-                                   aria-label="文件上传">
-                        </div>
-                    </form>
-                    <div>
-                        <span class="upload-compress">0/0</span>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
-                    <button type="button" class="btn btn-primary" onclick="uploadMultiFileAdvanceToServer(this)"
-                            data-loading-text="正在上传...">开始上传
-                    </button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-
 </div>
 </body>
 <script type="text/javascript" src="/static/js/jquery-2.1.1.min.js"></script>
@@ -211,6 +132,9 @@
         DOM_MY_MODAL = $("#myModal");
     });
 
+    /**
+     * 创建文件夹
+     */
     function createFolder() {
         let requestData = {
             position: DOM_CURRENT_POSITION_FOLDER.val(),
@@ -232,6 +156,9 @@
         });
     }
 
+    /**
+     * 删除文件
+     */
     function deleteFile(path) {
         swal({
             title: "确认删除?",
@@ -264,12 +191,18 @@
         });
     }
 
+    /**
+     * 上传文件
+     * @param btn
+     */
     function uploadFileToServer(btn) {
+        $(btn).button('loading');
 
-        let myData = $('#uploadFile')[0].files[0];
+        let files = $('#uploadFile')[0].files;
 
+        let myData = files[0];
 
-
+        // 初始化进度条
         let myBar = YJ_COMM.processBar.initProcess({
             dom: 'MyProcessBar',
             max: myData.size,
@@ -284,28 +217,11 @@
             file: myData,
             blockSize: 1024 * 1024 * 10,
             completed: function () {
+                $(btn).button('reset');
                 window.location.reload();
             }
         });
 
-        //let formData = new FormData();
-//
-        //formData.set("position", DOM_CURRENT_POSITION_FOLDER.val());
-        //formData.append("uploadFile", myData);
-        //$.ajax({
-        //    async: true,
-        //    url: "/upload",
-        //    type: "POST",
-        //    data: formData,
-        //    processData: false, // 告诉jQuery不要去处理发送的数据
-        //    contentType: false, // 告诉jQuery不要去设置Content-Type请求头
-        //    success: function (data) {
-        //        if (data.statusCode === 200) {
-        //            console.log("上传成功！");
-        //            window.location.reload();
-        //        }
-        //    }
-        //});
     }
 
     function uploadMultiFileToServer(btn) {
@@ -370,6 +286,29 @@
                 }
             })
         }
+    }
+
+    /**
+     * 下载文件
+     * @param filePath 文件绝对路径
+     */
+    function downloadFile(filePath) {
+        YJ_COMM.ajaxAsyncPostJson({
+            url: '/download',
+            data: {
+                path: filePath
+            },
+            successFnc: function (data) {
+                console.log(data);
+                if (data.success) {
+                    console.log(data.success);
+                    window.location.reload();
+                } else {
+                    alert(data.message);
+                }
+
+            }
+        })
     }
 </script>
 </html>
