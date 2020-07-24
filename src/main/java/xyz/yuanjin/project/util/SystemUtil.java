@@ -25,6 +25,12 @@ public class SystemUtil implements ApplicationContextAware {
         return APPLICATION_CONTEXT.getBean(SystemProperty.class);
     }
 
+    /**
+     * 判定是否为[受保护]文件
+     *
+     * @param file 文件
+     * @return {Boolean}
+     */
     public static boolean isProtectFile(File file) {
         for (Pattern pattern : SystemUtil.systemProperty().getNasProtectFilePatterns()) {
             if (pattern.matcher(file.getAbsolutePath()).matches()) {
@@ -68,6 +74,9 @@ public class SystemUtil implements ApplicationContextAware {
         return map;
     }
 
+    /**
+     * 打印项目地址
+     */
     public static void printSystemLink() {
         Map<String, String> map = getAllNetIpv4AddrMap();
         map.forEach((key, value) -> {

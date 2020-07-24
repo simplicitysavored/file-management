@@ -6,6 +6,8 @@ import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import xyz.yuanjin.project.util.SystemUtil;
 
 /**
+ * 入口
+ *
  * @author yuanjin
  */
 @EnableWebMvc

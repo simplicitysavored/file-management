@@ -15,6 +15,13 @@ import java.io.IOException;
 @RestController
 public class DownloadRestController {
 
+    /**
+     * 下载文件(不包含文件夹)
+     *
+     * @param path 绝对路径
+     * @return 文件流
+     * @throws IOException 异常
+     */
     @GetMapping("/download")
     public ResponseEntity<byte[]> download(String path) throws IOException {
         //获取文件信息

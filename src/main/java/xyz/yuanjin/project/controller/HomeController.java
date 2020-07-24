@@ -29,6 +29,13 @@ public class HomeController {
     @Resource
     private FileManagementService fileManagementService;
 
+    /**
+     * 加载主页
+     * 加载根盘(在配置文件中)
+     *
+     * @param model model
+     * @return {String}
+     */
     @GetMapping("/")
     public String home(Model model) {
 
@@ -36,7 +43,14 @@ public class HomeController {
         return "home";
     }
 
-
+    /**
+     * 记载文件夹列表
+     *
+     * @param path  加载的路径
+     * @param model model
+     * @return 页面
+     * @throws Exception 异常
+     */
     @GetMapping(value = "/nas", produces = "application/json;charset=utf8")
     public String file(@RequestParam(value = "path") String path, Model model) throws Exception {
         File file = new File(path);
@@ -59,6 +73,13 @@ public class HomeController {
         return "driverItem";
     }
 
+    /**
+     * 创建文件夹
+     *
+     * @param position 所在位置(绝对路径)
+     * @param name     文件夹名
+     * @return {ResponseDTO.toString()}
+     */
     @PostMapping(value = "/create", produces = "application/json;charset=utf8")
     public @ResponseBody
     String create(
@@ -79,6 +100,12 @@ public class HomeController {
         return ResponseUtil.successString();
     }
 
+    /**
+     * 删除文件或文件夹
+     *
+     * @param path 绝对路径
+     * @return {ResponseDTO.toString()}
+     */
     @PostMapping(value = "/delete", produces = "application/json;charset=utf8")
     public @ResponseBody
     String delete(
@@ -103,12 +130,25 @@ public class HomeController {
         return ResponseUtil.successString();
     }
 
+    /**
+     * 跳转到播放到视频页面
+     *
+     * @param model    model
+     * @param filePath 文件绝对路径
+     * @return 页面
+     */
     @GetMapping(value = "/jumpToVideo")
     public String jumpToVideo(Model model, @RequestParam("filePath") String filePath) {
         model.addAttribute("filePath", filePath);
         return "playVideo";
     }
 
+    /**
+     * 返回视频文件流
+     *
+     * @param response 响应对象
+     * @param filePath 视频文件绝对路径
+     */
     @GetMapping(value = "/playVideo")
     public @ResponseBody
     void playVideo(HttpServletResponse response, @RequestParam("filePath") String filePath) {
@@ -117,9 +157,6 @@ public class HomeController {
             if (!file.exists()) {
                 return;
             }
-//            if (!FileUtil.isVideo(file)) {
-//                return;
-//            }
 
             FileInputStream inputStream = new FileInputStream(file);
             String fileName = file.getName();
@@ -146,6 +183,14 @@ public class HomeController {
         }
     }
 
+    /**
+     * 上传文件
+     *
+     * @param file     文件
+     * @param position 存储位置
+     * @return {ResponseDTO.toString()}
+     * @throws IOException 异常
+     */
     @PostMapping(value = "/upload", produces = "application/json;charset=utf8")
     public @ResponseBody
     String upload(@RequestParam("uploadFile") MultipartFile file,
@@ -168,34 +213,6 @@ public class HomeController {
 
         fos.close();
         is.close();
-
-        System.gc();
-        return ResponseUtil.successString();
-    }
-
-    @PostMapping(value = "/uploadBatch", produces = "application/json;charset=utf8")
-    public @ResponseBody
-    String uploadBatch(@RequestParam("uploadFile") MultipartFile[] files,
-                       @RequestParam("position") String position) throws IOException {
-        System.out.println(position);
-        for (MultipartFile file : files) {
-            System.out.println(file.getOriginalFilename());
-            System.out.println(UnitUtils.convertTrafficAuto((long) file.getBytes().length));
-
-            InputStream is = file.getInputStream();
-
-            FileOutputStream fos = new FileOutputStream(new File(position + File.separator + file.getOriginalFilename()));
-
-            byte[] bytes = new byte[1024 * 100];
-            int length;
-            while ((length = is.read(bytes)) != -1) {
-                fos.write(bytes, 0, length);
-                fos.flush();
-            }
-
-            fos.close();
-            is.close();
-        }
 
         System.gc();
         return ResponseUtil.successString();

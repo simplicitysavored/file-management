@@ -18,6 +18,14 @@ import java.io.InputStream;
 @RestController
 public class UploadController {
 
+    /**
+     * 分片上传
+     *
+     * @param file     文件
+     * @param position 存储位置(绝对路径)
+     * @param fileName 文件名
+     * @return ResponseUtil.successString()
+     */
     @RequestMapping("/uploadBySplit")
     public String uploadBySplit(@RequestParam("uploadFile") MultipartFile file,
                                 @RequestParam(value = "position", defaultValue = "F:\\TMP") String position,
