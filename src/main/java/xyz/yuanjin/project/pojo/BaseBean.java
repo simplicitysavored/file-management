@@ -117,4 +117,23 @@ public class BaseBean {
     }
 
 
+    public static BaseBean newBaseBeanOfDotBack(File file) throws UnsupportedEncodingException {
+        BaseBean baseBean = new BaseBean();
+        baseBean.initialAuto(file);
+
+        File parent = file.getParentFile();
+
+        if (null != parent) {
+            baseBean.setName("..");
+            baseBean.setAbsolutePath(parent.getAbsolutePath());
+            baseBean.setAbsolutePathEncode(URLEncoder.encode(parent.getAbsolutePath(), StandardCharsets.UTF_8.name()));
+            baseBean.setFolder(true);
+            baseBean.setHidden(false);
+        } else {
+            baseBean.setHidden(true);
+        }
+        return baseBean;
+
+    }
+
 }

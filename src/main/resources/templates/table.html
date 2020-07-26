@@ -16,6 +16,20 @@
 </head>
 <body>
 <div class="container">
+
+    <div id="toolbar">
+        <div class="input-group">
+            <span class="input-group-addon" id="basic-addon1">加载磁盘: </span>
+            <select class="form-control" id="driverRoot" aria-label="加载磁盘">
+                <option value="C:\\" selected>C盘</option>
+                <option value="D:\\">D盘</option>
+                <option value="E:\\">E盘</option>
+                <option value="F:\\">F盘</option>
+                <option value="G:\\">G盘</option>
+                <option value="H:\\">H盘</option>
+            </select>
+        </div>
+    </div>
     <table id="table">
 
     </table>
@@ -29,13 +43,14 @@
         $DOM_TABLE = $('#table');
 
         $DOM_TABLE.bootstrapTable({
+            toolbar: '#toolbar',
             url: queryUrl,
             method: 'post',
             showColumns: true,
             pagination: true,
             sidePagination: 'client',
-            pageSize: 10,
-            pageList: [10, 50, 100],
+            pageSize: 20,
+            pageList: [20, 50, 100],
             totalField: 'total',
             dataField: 'data',
             paginationPreText: '上一页',
@@ -47,7 +62,7 @@
                 if (!queryParams) {
                     queryParams = params;
                     queryParams.queryObj = {
-                        path: "C:\\",
+                        path: $('#driverRoot').val(),
                         dotBack: true
                     };
                 }
@@ -66,7 +81,7 @@
                         return fieldValue;
                     }
                 }, {
-                    field: 'size',
+                    field: 'byteSizeDesc',
                     title: '大小'
                 }, {
                     field: 'price',
@@ -77,6 +92,9 @@
         }) // end bootstrapTable
 
 
+        $('#driverRoot').change(function () {
+            reloadDataList($(this).val());
+        })
     }); // $(function(){}) end
 
     function getTableData() {

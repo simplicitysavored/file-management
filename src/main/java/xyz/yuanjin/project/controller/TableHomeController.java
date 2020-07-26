@@ -1,5 +1,6 @@
 package xyz.yuanjin.project.controller;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import xyz.yuanjin.project.common.dto.ResponseDTO;
@@ -12,8 +13,10 @@ import xyz.yuanjin.project.service.FileManagementService;
 
 import javax.annotation.Resource;
 import java.io.File;
+import java.util.ArrayList;
 import java.util.Map;
 
+@Slf4j
 @Controller
 public class TableHomeController {
     @Resource
@@ -41,12 +44,21 @@ public class TableHomeController {
     public @ResponseBody
     ResponseDTO listV2(@RequestBody PageParam<TableQueryDTO> pageParam) throws Exception {
 
-        File file = fileManagementService.checkFilePath(pageParam.getQueryObj().getPath());
 
-        FolderBean folderBean = fileManagementService.loadFolder(file, pageParam.getQueryObj().getDotBack());
+        FolderBean folderBean = null;
+        try {
+            File file = fileManagementService.checkFilePath(pageParam.getQueryObj().getPath());
+            folderBean = fileManagementService.loadFolder(file, pageParam.getQueryObj().getDotBack());
 
-        return ResponseUtil
-                .response(ResponseEnum.SUCCESS)
-                .setData(folderBean.getFiles());
+            return ResponseUtil
+                    .response(ResponseEnum.SUCCESS)
+                    .setData(folderBean.getFiles());
+        } catch (Exception e) {
+            //log.error(e.getMessage(), e);
+            return ResponseUtil
+                    .response(ResponseEnum.PARAMS_ERROR)
+                    .setData(new ArrayList<>());
+        }
+
     }
 }

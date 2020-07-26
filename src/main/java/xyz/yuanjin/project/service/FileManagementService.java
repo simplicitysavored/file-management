@@ -63,17 +63,23 @@ public class FileManagementService {
         });
 
         if (dotBack) {
+            List<BaseBean> newFiles = new ArrayList<>();
             if (!CollectionUtils.isEmpty(files)) {
-                List<BaseBean> newFiles = new ArrayList<>();
 
                 BaseBean dotBackBean = BaseBean.newBaseBeanOfDotBack(files.get(0));
                 if (null != dotBackBean.getAbsolutePath()) {
                     newFiles.add(dotBackBean);
                 }
 
-                newFiles.addAll(files);
-                folderBean.setFiles(newFiles);
+            } else {
+                BaseBean dotBackBean = BaseBean.newBaseBeanOfDotBack(file);
+                if (null != dotBackBean.getAbsolutePath()) {
+                    newFiles.add(dotBackBean);
+                }
             }
+
+            newFiles.addAll(files);
+            folderBean.setFiles(newFiles);
         } else {
             folderBean.setFiles(files);
         }
