@@ -18,6 +18,7 @@
 <div class="container">
 
     <div id="toolbar">
+
         <div class="input-group">
             <span class="input-group-addon" id="basic-addon1">加载磁盘: </span>
             <select class="form-control" id="driverRoot" aria-label="加载磁盘">
@@ -28,6 +29,7 @@
                 <option value="G:\\">G盘</option>
                 <option value="H:\\">H盘</option>
             </select>
+            <a type="button" class="input-group-addon btn btn-default" onclick="reloadDataList()">重载</a>
         </div>
     </div>
     <table id="table">
@@ -75,8 +77,8 @@
                     title: '名称',
                     formatter: function (fieldValue, rowData, rowIndex, fieldName) {
                         if (rowData.folder) {
-                            console.log('rowData.absolutePathEncode',rowData.absolutePathEncode);
-                            return '<a href="javascript:reloadDataList(\''+encodeURI(rowData.absolutePathEncode)+'\')">'+fieldValue+'</a>';
+                            console.log('rowData.absolutePathEncode', rowData.absolutePathEncode);
+                            return '<a href="javascript:reloadDataList(\'' + encodeURI(rowData.absolutePathEncode) + '\')">' + fieldValue + '</a>';
                         }
                         return fieldValue;
                     }
@@ -112,6 +114,7 @@
     }
 
     function reloadDataList(path) {
+        path = path ? path : $('#driverRoot').val();
         console.log('path', path);
         queryParams.queryObj = {
             path: path,
