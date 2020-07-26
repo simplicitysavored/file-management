@@ -1,12 +1,14 @@
 package xyz.yuanjin.project.pojo;
 
 import lombok.Data;
+import org.springframework.beans.BeanUtils;
 import xyz.yuanjin.project.common.util.FileUtil;
 import xyz.yuanjin.project.util.SystemUtil;
 
 import java.io.File;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.Date;
 
 /**
@@ -19,7 +21,16 @@ public class BaseBean {
 
     private String name;
 
+    /**
+     * 当前所在文件夹的绝对路径
+     */
     private String absolutePath;
+
+    /**
+     * 当前所在文件夹的绝对路径
+     * URL Encode
+     */
+    private String absolutePathEncode;
 
     private Date lastModifyDate;
 
@@ -35,8 +46,19 @@ public class BaseBean {
      * 上一级文件夹名
      */
     private String previousName;
+
     /**
-     * 上一级
+     * 父级所在文件夹的绝对路径
+     */
+    private String preAbsolutePath;
+
+    /**
+     * 父级所在文件夹的绝对路径
+     * URL Encode
+     */
+    private String preAbsolutePathEncode;
+    /**
+     * 上一级 URL
      */
     private String previousUrl;
     /**
@@ -49,9 +71,10 @@ public class BaseBean {
     public BaseBean() {
     }
 
-    private void initialAuto(File file) {
+    private void initialAuto(File file) throws UnsupportedEncodingException {
         this.name = file.getName();
         this.absolutePath = file.getAbsolutePath();
+        this.absolutePathEncode = URLEncoder.encode(file.getAbsolutePath(), StandardCharsets.UTF_8.name());
         this.lastModifyDate = new Date(file.lastModified());
         this.folder = file.isDirectory();
         this.video = FileUtil.isVideo(file);
@@ -68,9 +91,27 @@ public class BaseBean {
 
         if (null != prev) {
             baseBean.setPreviousName(prev.getName());
-            baseBean.setPreviousUrl("/nas?path=" + URLEncoder.encode(prev.getAbsolutePath(), "UTF-8"));
+            File prevParent = prev.getParentFile();
+            if (null != prevParent) {
+                baseBean.setPreAbsolutePath(prevParent.getAbsolutePath());
+                baseBean.setPreAbsolutePathEncode(URLEncoder.encode(prevParent.getAbsolutePath(), StandardCharsets.UTF_8.name()));
+            }
+
+            baseBean.setPreviousUrl("/nas?path=" + URLEncoder.encode(prev.getAbsolutePath(), StandardCharsets.UTF_8.name()));
             baseBean.setProtect(SystemUtil.isProtectFile(file));
         }
+
+        return baseBean;
+    }
+
+    public static BaseBean newBaseBeanOfDotBack(BaseBean file) {
+        BaseBean baseBean = new BaseBean();
+
+        baseBean.setName("..");
+        baseBean.setAbsolutePath(file.getPreAbsolutePath());
+        baseBean.setAbsolutePathEncode(file.getPreAbsolutePathEncode());
+        baseBean.setFolder(true);
+        baseBean.setHidden(null == file.getPreAbsolutePath());
 
         return baseBean;
     }

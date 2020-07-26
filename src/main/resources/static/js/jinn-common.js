@@ -124,7 +124,7 @@ const YJ_COMM = {
         dom: null,
         timestamp: 0,
         conf: {
-            delay: 1000, // ms
+            delay: 100, // ms
             domId: null,
             max: null,
             min: null,

@@ -53,20 +53,10 @@ public class HomeController {
      */
     @GetMapping(value = "/nas", produces = "application/json;charset=utf8")
     public String file(@RequestParam(value = "path") String path, Model model) throws Exception {
-        File file = new File(path);
-        if (!file.isDirectory()) {
-            throw new Exception("这个不是文件夹");
-        }
+        File file = fileManagementService.checkFilePath(path);
 
         FolderBean folderBean = fileManagementService.loadFolder(file);
 
-        folderBean.getFiles().sort(Comparator.comparing(BaseBean::getName));
-
-        folderBean.getFiles().sort((o1, o2) -> {
-            int int1 = o1.isFolder() ? 0 : 1;
-            int int2 = o2.isFolder() ? 0 : 1;
-            return int1 - int2;
-        });
 
         model.addAttribute("folderBean", folderBean);
         model.addAttribute("CURRENT_POSITION_FOLDER", path);

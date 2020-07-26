@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<head>
+    <meta charset="UTF-8">
+    <title>表格</title>
+
+    <link rel="stylesheet" th:href="@{/static/bootstrap/css/bootstrap.min.css}">
+    <link rel="stylesheet" th:href="@{/static/bootstrap-table/bootstrap-table.min.css}">
+
+    <script type="text/javascript" src="/static/js/jquery-2.1.1.min.js"></script>
+    <script type="text/javascript" src="/static/bootstrap/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="/static/bootstrap-table/bootstrap-table.min.js"></script>
+    <script type="text/javascript" src="/static/bootstrap-table/locale/bootstrap-table-zh-CN.min.js"></script>
+
+</head>
+<body>
+<div class="container">
+    <table id="table">
+
+    </table>
+</div>
+</body>
+<script>
+    let queryParams;
+    let $DOM_TABLE;
+    const queryUrl = "/table/listV2";
+    $(function () {
+        $DOM_TABLE = $('#table');
+
+        $DOM_TABLE.bootstrapTable({
+            url: queryUrl,
+            method: 'post',
+            showColumns: true,
+            pagination: true,
+            sidePagination: 'client',
+            pageSize: 10,
+            pageList: [10, 50, 100],
+            totalField: 'total',
+            dataField: 'data',
+            paginationPreText: '上一页',
+            paginationNextText: '下一页',
+            queryParamsType: '',
+            classes: 'table table-bordered table-hover',
+
+            queryParams: function (params) {
+                if (!queryParams) {
+                    queryParams = params;
+                    queryParams.queryObj = {
+                        path: "C:\\",
+                        dotBack: true
+                    };
+                }
+                return queryParams;
+            },
+
+            columns: [
+                {
+                    field: 'name',
+                    title: '名称',
+                    formatter: function (fieldValue, rowData, rowIndex, fieldName) {
+                        if (rowData.folder) {
+                            console.log('rowData.absolutePathEncode',rowData.absolutePathEncode);
+                            return '<a href="javascript:reloadDataList(\''+encodeURI(rowData.absolutePathEncode)+'\')">'+fieldValue+'</a>';
+                        }
+                        return fieldValue;
+                    }
+                }, {
+                    field: 'size',
+                    title: '大小'
+                }, {
+                    field: 'price',
+                    title: '操作'
+                }
+            ],
+            data: getTableData()
+        }) // end bootstrapTable
+
+
+    }); // $(function(){}) end
+
+    function getTableData() {
+        return [
+            {
+                id: 1,
+                name: 'Item 1',
+                price: '$1'
+            }, {
+                id: 2,
+                name: 'Item 2',
+                price: '$2'
+            }
+        ];
+    }
+
+    function reloadDataList(path) {
+        console.log('path', path);
+        queryParams.queryObj = {
+            path: path,
+            dotBack: true
+        };
+        $DOM_TABLE.bootstrapTable('refresh', queryParams);
+
+    }
+</script>
+</html>

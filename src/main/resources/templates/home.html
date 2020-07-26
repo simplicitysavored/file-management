@@ -32,10 +32,13 @@
         <h3>个人文件管理</h3>
         <ul class="driver-list">
             <li th:each="driver : ${listenDrivers}" class="driver-item">
-<!--                <a th:onclick="loadDriver([[${driver}]])" th:text="${driver}"></a>-->
-                                <a th:href="@{/nas(path=${driver})}" th:text="${driver}" class="btn btn-info"></a>
+                <!--                <a th:onclick="loadDriver([[${driver}]])" th:text="${driver}"></a>-->
+                <a th:href="@{/nas(path=${driver})}" th:text="${driver}" class="btn btn-info"></a>
             </li>
         </ul>
+    </div>
+    <div class="col-sm-12">
+        <a href="/table" class="btn btn-default">表格Demo</a>
     </div>
 </div>
 </body>
