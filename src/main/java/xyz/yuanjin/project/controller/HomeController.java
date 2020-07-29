@@ -2,11 +2,13 @@ package xyz.yuanjin.project.controller;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
+import xyz.yuanjin.project.common.enums.ResponseEnum;
 import xyz.yuanjin.project.common.util.FileUtil;
 import xyz.yuanjin.project.common.util.ResponseUtil;
 import xyz.yuanjin.project.common.util.UnitUtils;
@@ -76,6 +78,9 @@ public class HomeController {
             @RequestParam("position") String position,
             @RequestParam("name") String name
     ) {
+        if (StringUtils.isEmpty(name)) {
+            return ResponseUtil.response(ResponseEnum.PARAMS_ERROR, "参数错误").toString();
+        }
         File file = new File(position);
         if (file.exists() && file.isDirectory()) {
             try {

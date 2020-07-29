@@ -15,32 +15,83 @@
 
 </head>
 <body>
+<!--
+ col-xs (<768px)
+ col-sm (≥768px)
+ col-md (≥992px)
+ col-lg (≥1200px)
+ -->
 <div class="container">
-
-    <div id="toolbar">
-
-        <div class="input-group">
-            <span class="input-group-addon" id="basic-addon1">加载磁盘: </span>
-            <select class="form-control" id="driverRoot" aria-label="加载磁盘">
-                <option value="C:\\" selected>C盘</option>
-                <option value="D:\\">D盘</option>
-                <option value="E:\\">E盘</option>
-                <option value="F:\\">F盘</option>
-                <option value="G:\\">G盘</option>
-                <option value="H:\\">H盘</option>
-            </select>
-            <a type="button" class="input-group-addon btn btn-default" onclick="reloadDataList()">重载</a>
+    <div class="col-sm-12">
+        <div class="well well-sm">
+            look me !!!
         </div>
     </div>
-    <table id="table">
-
-    </table>
+    <div id="toolbar">
+        <div class="col-md-2">
+            <div class="input-group">
+                <select class="form-control" id="driverRoot" aria-label="加载磁盘">
+                    <option value="C:\\">C盘</option>
+                    <option value="D:\\" selected>D盘</option>
+                    <option value="E:\\">E盘</option>
+                    <option value="F:\\">F盘</option>
+                    <option value="G:\\">G盘</option>
+                    <option value="H:\\">H盘</option>
+                </select>
+                <a type="button" class="input-group-addon btn btn-info" onclick="reloadDataList()"><span
+                        class="glyphicon glyphicon-repeat"></span></a>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="btn-group" role="group" aria-label="操作按钮组">
+                <button class="btn btn-default" onclick="openCreateModal()">新建</button>
+                <button class="btn btn-default">上传</button>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-12">
+        <table id="table"></table>
+    </div>
 </div>
+
+
+<!-- 创建文件夹 Modal -->
+<div class="modal fade" id="MODAL_CREATE" tabindex="-1" role="dialog" aria-labelledby="MODAL_CREATE_LABEL">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">新建文件夹</h4>
+            </div>
+            <div class="modal-body">
+                <form action="javascript:void(0)" id="FORM_CREATE_FOLDER">
+                    <div class="input-group">
+                        <input type="hidden" name="position" value="" aria-label="位置路径">
+                        <span class="input-group-addon" id="basic-addon1">文件夹名称：</span>
+                        <input type="text" class="form-control" name="name" placeholder="文件夹名称"
+                               aria-label="文件夹名称">
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                <button type="button" class="btn btn-primary" onclick="createFolder()">确认</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 </body>
+
+<script type="text/javascript" src="/static/js/jinn-ajax-util.js"></script>
 <script>
     let queryParams;
     let $DOM_TABLE;
     const queryUrl = "/table/listV2";
+
+    function responseHandler() {
+        console.log('responseHandler')
+    }
+
     $(function () {
         $DOM_TABLE = $('#table');
 
@@ -59,7 +110,10 @@
             paginationNextText: '下一页',
             queryParamsType: '',
             classes: 'table table-bordered table-hover',
-
+            responseHandler: responseHandler(),
+            onLoadSuccess: function(data) {
+                $('input[name=position]').val(data.extendInfo);
+            },
             queryParams: function (params) {
                 if (!queryParams) {
                     queryParams = params;
@@ -77,7 +131,6 @@
                     title: '名称',
                     formatter: function (fieldValue, rowData, rowIndex, fieldName) {
                         if (rowData.folder) {
-                            console.log('rowData.absolutePathEncode', rowData.absolutePathEncode);
                             return '<a href="javascript:reloadDataList(\'' + encodeURI(rowData.absolutePathEncode) + '\')">' + fieldValue + '</a>';
                         }
                         return fieldValue;
@@ -89,9 +142,8 @@
                     field: 'price',
                     title: '操作'
                 }
-            ],
-            data: getTableData()
-        }) // end bootstrapTable
+            ]
+        }); // end bootstrapTable
 
 
         $('#driverRoot').change(function () {
@@ -99,20 +151,9 @@
         })
     }); // $(function(){}) end
 
-    function getTableData() {
-        return [
-            {
-                id: 1,
-                name: 'Item 1',
-                price: '$1'
-            }, {
-                id: 2,
-                name: 'Item 2',
-                price: '$2'
-            }
-        ];
-    }
-
+    /**
+     * 加载表格数据
+     */
     function reloadDataList(path) {
         path = path ? path : $('#driverRoot').val();
         console.log('path', path);
@@ -122,6 +163,33 @@
         };
         $DOM_TABLE.bootstrapTable('refresh', queryParams);
 
+    }
+
+    function openCreateModal() {
+        $('#MODAL_CREATE').modal({
+            show: true,
+            backdrop: 'static',
+            keyboard: false
+        });
+    }
+
+    /**
+     * 创建文件夹
+     */
+    function createFolder() {
+        let url = '/table/create';
+        let formId = 'FORM_CREATE_FOLDER';
+        AjaxUtil.postForm(url, formId,
+            function (data) {
+                if (data.statusCode === 200) {
+                    alert('成功');
+                    $('#MODAL_CREATE').modal('hide');
+                    reloadDataList($('#FORM_CREATE_FOLDER').find('input[name=position]').val());
+                }else {
+                    alert(data.message);
+                }
+            }
+        );
     }
 </script>
 </html>

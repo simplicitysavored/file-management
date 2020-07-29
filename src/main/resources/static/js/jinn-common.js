@@ -1,5 +1,8 @@
 const YJ_COMM = {
-    defaultOption: {
+    /**
+     * 默认Ajax配置
+     */
+    defaultAjaxOption: {
         url: null,
         async: true,
         type: 'POST',
@@ -18,23 +21,28 @@ const YJ_COMM = {
         }
 
     },
+    /**
+     * 异步Ajax请求
+     * @param option
+     */
     ajaxAsyncPostJson: function (option) {
-        option = option ? option : YJ_COMM.defaultOption;
+        option = option ? option : YJ_COMM.defaultAjaxOption;
         $.ajax({
-            async: option.async ? option.async : YJ_COMM.defaultOption.async,
-            url: option.url ? option.url : YJ_COMM.defaultOption.url,
-            type: option.type ? option.type : YJ_COMM.defaultOption.type,
-            dataType: option.dataType ? option.dataType : YJ_COMM.defaultOption.dataType,
+            async: option.async ? option.async : YJ_COMM.defaultAjaxOption.async,
+            url: option.url ? option.url : YJ_COMM.defaultAjaxOption.url,
+            type: option.type ? option.type : YJ_COMM.defaultAjaxOption.type,
+            dataType: option.dataType ? option.dataType : YJ_COMM.defaultAjaxOption.dataType,
             data: option.data ? option.data : YJ_COMM.option.defaultOption,
-            timeout: option.timeout ? option.timeout : YJ_COMM.defaultOption.timeout,
+            timeout: option.timeout ? option.timeout : YJ_COMM.defaultAjaxOption.timeout,
             success: function (data) {
-                return option.successFnc ? option.successFnc(data) : YJ_COMM.defaultOption.successFnc(data);
+                return option.successFnc ? option.successFnc(data) : YJ_COMM.defaultAjaxOption.successFnc(data);
             },
             error: function (req, msg, obj) {
-                return option.errorFnc ? option.errorFnc(req, msg, obj) : YJ_COMM.defaultOption.errorFnc(req, msg, obj);
+                return option.errorFnc ? option.errorFnc(req, msg, obj) : YJ_COMM.defaultAjaxOption.errorFnc(req, msg, obj);
             }
         })
     },
+
     uploadFile: function (option) {
         option = option ? option : {
             input: '#input',
@@ -120,6 +128,9 @@ const YJ_COMM = {
             }
         });
     },
+    /**
+     * 进度条工具
+     */
     processBar: {
         dom: null,
         timestamp: 0,
@@ -172,6 +183,11 @@ const YJ_COMM = {
             }
         }
     },
+    /**
+     * 转换单位
+     * @param bytes 字节数
+     * @returns {string} 结果
+     */
     transUnitBytes: function (bytes) {
         let factor = 1024.0;
         if (bytes > factor * factor * factor) {

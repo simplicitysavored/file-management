@@ -2,6 +2,7 @@ package xyz.yuanjin.project.controller;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 import xyz.yuanjin.project.common.dto.ResponseDTO;
 import xyz.yuanjin.project.common.enums.ResponseEnum;
@@ -27,19 +28,6 @@ public class TableHomeController {
         return "/table";
     }
 
-    @RequestMapping(value = "/table/list")
-    public @ResponseBody
-    ResponseDTO list(@RequestBody PageParam<String> pageParam) throws Exception {
-
-        File file = fileManagementService.checkFilePath(pageParam.getQueryObj());
-
-        FolderBean folderBean = fileManagementService.loadFolder(file);
-
-        return ResponseUtil
-                .response(ResponseEnum.SUCCESS)
-                .setData(folderBean);
-    }
-
     @RequestMapping(value = "/table/listV2", produces = "application/json;charset=utf8")
     public @ResponseBody
     ResponseDTO listV2(@RequestBody PageParam<TableQueryDTO> pageParam) throws Exception {
@@ -52,7 +40,8 @@ public class TableHomeController {
 
             return ResponseUtil
                     .response(ResponseEnum.SUCCESS)
-                    .setData(folderBean.getFiles());
+                    .setData(folderBean.getFiles())
+                    .setExtendInfo(folderBean.getAbsolutePath());
         } catch (Exception e) {
             //log.error(e.getMessage(), e);
             return ResponseUtil
@@ -60,5 +49,39 @@ public class TableHomeController {
                     .setData(new ArrayList<>());
         }
 
+    }
+
+
+    /**
+     * 创建文件夹
+     *
+     * @param position 所在位置(绝对路径)
+     * @param name     文件夹名
+     * @return {ResponseDTO.toString()}
+     */
+    @PostMapping(value = "/table/create", produces = "application/json;charset=utf8")
+    public @ResponseBody
+    ResponseDTO create(
+            @RequestParam("position") String position,
+            @RequestParam("name") String name
+    ) {
+        if (StringUtils.isEmpty(name)) {
+            return ResponseUtil.error("文件夹名成不能为空");
+        }
+        File positionFile = new File(position);
+        if (!(positionFile.exists() && positionFile.isDirectory())) {
+            return ResponseUtil.error("位置错误");
+        }
+        try {
+            File newFile = new File(positionFile.getAbsolutePath().concat(File.separator).concat(name));
+            if (newFile.exists() && newFile.isDirectory()) {
+                return ResponseUtil.error("文件夹已存在");
+            }
+            boolean success = newFile.mkdirs();
+            return success ? ResponseUtil.success() : ResponseUtil.error("新建文件夹失败");
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseUtil.error("新建文件夹异常");
+        }
     }
 }
