@@ -13,6 +13,12 @@
     <script type="text/javascript" src="/static/bootstrap-table/bootstrap-table.min.js"></script>
     <script type="text/javascript" src="/static/bootstrap-table/locale/bootstrap-table-zh-CN.min.js"></script>
 
+    <style type="text/css">
+        /*表格行选中时的颜色*/
+        .tr-checked {
+            background-color: #f5f5f5;
+        }
+    </style>
 </head>
 <body>
 <!--
@@ -24,7 +30,8 @@
 <div class="container">
     <div class="col-sm-12">
         <div class="well well-sm">
-            look me !!!
+            <!--显示一些信息-->
+            <span id="tipMessage">look me !!!</span>
         </div>
     </div>
     <div id="toolbar">
@@ -42,10 +49,13 @@
                         class="glyphicon glyphicon-repeat"></span></a>
             </div>
         </div>
-        <div class="col-md-3">
+        <div class="col-md-10">
             <div class="btn-group" role="group" aria-label="操作按钮组">
                 <button class="btn btn-default" onclick="openCreateModal()">新建</button>
-                <button class="btn btn-default">上传</button>
+                <button class="btn btn-default" onclick="alert('待开发')">上传</button>
+                <button class="btn btn-default" onclick="alert('待开发')">下载</button>
+                <button class="btn btn-default" onclick="deleteFile()">删除</button>
+                <button class="btn btn-default" onclick="getSelectedRow()">获取选中行</button>
             </div>
         </div>
     </div>
@@ -82,22 +92,27 @@
 
 </body>
 
+<script type="text/javascript" src="/static/js/sweet-alert.min.js"></script>
 <script type="text/javascript" src="/static/js/jinn-ajax-util.js"></script>
 <script>
     let queryParams;
-    let $DOM_TABLE;
-    const queryUrl = "/table/listV2";
+
+    let $DOM_TABLE, // 表格
+        $DOM_TIP_MESSAGE, // 提示框
+        $DOM_DRIVER_DROPDOWN; // 驱动器下拉框
 
     function responseHandler() {
         console.log('responseHandler')
     }
 
     $(function () {
+        $DOM_TIP_MESSAGE = $('#tipMessage');
         $DOM_TABLE = $('#table');
+        $DOM_DRIVER_DROPDOWN = $('#driverRoot');
 
         $DOM_TABLE.bootstrapTable({
             toolbar: '#toolbar',
-            url: queryUrl,
+            url: "/table/list",
             method: 'post',
             showColumns: true,
             pagination: true,
@@ -111,42 +126,74 @@
             queryParamsType: '',
             classes: 'table table-bordered table-hover',
             responseHandler: responseHandler(),
-            onLoadSuccess: function(data) {
+            onLoadSuccess: function (data) {
+                /*设置当前所在位置*/
                 $('input[name=position]').val(data.extendInfo);
             },
             queryParams: function (params) {
                 if (!queryParams) {
                     queryParams = params;
                     queryParams.queryObj = {
-                        path: $('#driverRoot').val(),
+                        path: $DOM_DRIVER_DROPDOWN.val(),
                         dotBack: true
                     };
                 }
                 return queryParams;
             },
-
+            onClickRow: function (row, tr) {
+                console.log('onClickRow-row', row);
+            },
+            /*点击选择行*/
+            clickToSelect: true,
             columns: [
+                // {
+                //     field: 'number',
+                //     title: '序号',
+                //     width: '5%',
+                //     align: 'center',
+                //     switchable: false,
+                //     formatter: function (value, row, index) {
+                //         return '<input type="checkbox" name="selectCheckBox" value="' + index + '" aria-label="多选框"/>';
+                //     }
+                // },
+                {
+                    checkbox: true,
+                    width: '5%',
+                    align: 'center',
+                    //checkboxEnabled: false
+                },
                 {
                     field: 'name',
                     title: '名称',
                     formatter: function (fieldValue, rowData, rowIndex, fieldName) {
+                        let html = '';
                         if (rowData.folder) {
-                            return '<a href="javascript:reloadDataList(\'' + encodeURI(rowData.absolutePathEncode) + '\')">' + fieldValue + '</a>';
+                            html += '<a href="javascript:reloadDataList(\'' + encodeURI(rowData.absolutePathEncode) + '\')">' + fieldValue + '</a>';
+                        } else {
+                            html += fieldValue;
                         }
-                        return fieldValue;
+                        if (rowData.protect) {
+                            html += '&nbsp;&nbsp;<span class="label label-warning">保护</span>';
+                        }
+                        return html;
                     }
                 }, {
                     field: 'byteSizeDesc',
                     title: '大小'
-                }, {
+                }, /*{
                     field: 'price',
-                    title: '操作'
-                }
+                    title: '操作',
+                    formatter: function (fieldValue, rowData, rowIndex, fieldName) {
+                        return [
+                            '<button type="button" class="btn btn-default btn-sm" onclick="deleteFile(' + rowData + ')">删除</button>'
+                        ].join("\n");
+                    }
+                }*/
             ]
         }); // end bootstrapTable
 
 
-        $('#driverRoot').change(function () {
+        $DOM_DRIVER_DROPDOWN.change(function () {
             reloadDataList($(this).val());
         })
     }); // $(function(){}) end
@@ -155,7 +202,7 @@
      * 加载表格数据
      */
     function reloadDataList(path) {
-        path = path ? path : $('#driverRoot').val();
+        path = path ? path : $DOM_DRIVER_DROPDOWN.val();
         console.log('path', path);
         queryParams.queryObj = {
             path: path,
@@ -185,11 +232,73 @@
                     alert('成功');
                     $('#MODAL_CREATE').modal('hide');
                     reloadDataList($('#FORM_CREATE_FOLDER').find('input[name=position]').val());
-                }else {
+                } else {
                     alert(data.message);
                 }
             }
         );
+    }
+
+    /*获取选中行*/
+    function getSelectedRow() {
+        let protectNum = 0;
+
+        let rows = $DOM_TABLE.bootstrapTable('getSelections');
+        for (let index in rows) {
+            if (rows[index].protect) {
+                protectNum++;
+            }
+            console.log('row.protect', rows[index].protect);
+        }
+        if (protectNum > 0) {
+            alert('存在受保护文件个数:' + protectNum);
+            return false;
+        }
+        console.log('selectedRow', rows);
+        alert('选中了' + rows.length + '行');
+    }
+
+    /**
+     * 删除文件
+     */
+    function deleteFile() {
+        alert('待开发');
+        return false;
+        let protectNum = 0;
+        let rows = $DOM_TABLE.bootstrapTable('getSelections');
+        for (let index in rows) {
+            if (rows[index].protect) {
+                protectNum++;
+            }
+            console.log('row.protect', rows[index].protect);
+        }
+        if (protectNum > 0) {
+            alert('删除失败, 存在受保护文件个数:' + protectNum);
+            return false;
+        }
+        let params = {};
+        swal({
+            title: '操作提示',
+            text: "是否确认删除选中的内容",
+            icon: "warning",
+            buttons: {
+                cancel: {
+                    text: "取消",
+                },
+                confirm: {
+                    text: "确认",
+                }
+            }
+        });
+
+        // AjaxUtil.ajaxAsyncPostJson(
+        //     "/table/delete",
+        //     params,
+        //     function (res) {
+        //         alert(res.statusCode);
+        //     }
+        // )
+
     }
 </script>
 </html>

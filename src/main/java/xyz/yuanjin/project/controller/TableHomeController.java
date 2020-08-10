@@ -19,18 +19,30 @@ import java.util.Map;
 
 @Slf4j
 @Controller
+@RequestMapping("/table")
 public class TableHomeController {
     @Resource
     private FileManagementService fileManagementService;
 
-    @GetMapping("/table")
+    /**
+     * 页面加载
+     *
+     * @return 页面
+     */
+    @GetMapping("")
     public String table() {
         return "/table";
     }
 
-    @RequestMapping(value = "/table/listV2", produces = "application/json;charset=utf8")
+    /**
+     * 查询列表数据
+     *
+     * @param pageParam 查询参数
+     * @return {ResponseDTO}
+     */
+    @RequestMapping(value = "/list", produces = "application/json;charset=utf8")
     public @ResponseBody
-    ResponseDTO listV2(@RequestBody PageParam<TableQueryDTO> pageParam) throws Exception {
+    ResponseDTO listV2(@RequestBody PageParam<TableQueryDTO> pageParam) {
 
 
         FolderBean folderBean = null;
@@ -59,7 +71,7 @@ public class TableHomeController {
      * @param name     文件夹名
      * @return {ResponseDTO.toString()}
      */
-    @PostMapping(value = "/table/create", produces = "application/json;charset=utf8")
+    @PostMapping(value = "/create", produces = "application/json;charset=utf8")
     public @ResponseBody
     ResponseDTO create(
             @RequestParam("position") String position,
@@ -83,5 +95,16 @@ public class TableHomeController {
             e.printStackTrace();
             return ResponseUtil.error("新建文件夹异常");
         }
+    }
+
+    /**
+     * 删除文件夹或文件
+     *
+     * @return {ResponseDTO}
+     */
+    @PostMapping("/delete")
+    public @ResponseBody
+    ResponseDTO delete() {
+        return ResponseUtil.success();
     }
 }
