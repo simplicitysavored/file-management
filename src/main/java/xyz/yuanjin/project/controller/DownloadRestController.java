@@ -7,10 +7,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
+import javax.servlet.http.HttpServletResponse;
+import java.io.*;
 
 @RestController
 public class DownloadRestController {
@@ -39,5 +37,22 @@ public class DownloadRestController {
         }
         return new ResponseEntity<byte[]>(bos.toByteArray(),
                 headers, HttpStatus.OK);
+    }
+
+    @GetMapping("/downloadV2")
+    public void downloadV2(String path, HttpServletResponse response) throws Exception {
+        // application/octet-stream
+        File file = new File(path);
+        response.setContentType("application/octet-stream");
+        response.setHeader("Content-Disposition", "attachment;fileName="+file.getName());
+
+        FileInputStream fis = new FileInputStream(file);
+        byte[] bytes = new byte[102400];
+        int length;
+        while ((length = fis.read(bytes)) != -1) {
+            response.getOutputStream().write(bytes, 0, length);
+            response.getOutputStream().flush();
+            response.flushBuffer();
+        }
     }
 }

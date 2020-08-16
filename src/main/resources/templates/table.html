@@ -53,7 +53,7 @@
             <div class="btn-group" role="group" aria-label="操作按钮组">
                 <button class="btn btn-default" onclick="openCreateModal()">新建</button>
                 <button class="btn btn-default" onclick="alert('待开发')">上传</button>
-                <button class="btn btn-default" onclick="alert('待开发')">下载</button>
+                <button class="btn btn-default" onclick="downloadFileV2()">下载</button>
                 <button class="btn btn-default" onclick="deleteFile()">删除</button>
                 <button class="btn btn-default" onclick="getSelectedRow()">获取选中行</button>
             </div>
@@ -298,6 +298,20 @@
         //         alert(res.statusCode);
         //     }
         // )
+
+    }
+
+    function downloadFileV2() {
+
+        let rows = $DOM_TABLE.bootstrapTable('getSelections');
+        if (rows.length !== 1) {
+            alert("一次只能下载一个");
+            return false;
+        }
+
+        alert(rows[0].absolutePath);
+
+        window.open("/downloadV2?path="+rows[0].absolutePathEncode, "_blank")
 
     }
 </script>
