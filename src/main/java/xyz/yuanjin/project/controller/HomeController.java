@@ -14,13 +14,16 @@ import xyz.yuanjin.project.common.util.ResponseUtil;
 import xyz.yuanjin.project.common.util.UnitUtils;
 import xyz.yuanjin.project.pojo.BaseBean;
 import xyz.yuanjin.project.pojo.FolderBean;
+import xyz.yuanjin.project.pojo.config.SystemConfig;
 import xyz.yuanjin.project.service.FileManagementService;
 import xyz.yuanjin.project.util.SystemUtil;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
 import java.io.*;
+import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.List;
 
 /**
  * @author yuanjin
@@ -41,7 +44,11 @@ public class HomeController {
     @GetMapping("/")
     public String home(Model model) {
 
-        model.addAttribute("listenDrivers", SystemUtil.systemProperty().getNasListenFileList());
+//        model.addAttribute("listenDrivers", SystemUtil.systemProperty().getNasListenFileList());
+        List<String> list = new ArrayList<>();
+        SystemConfig.getInstance().getListenFolder().forEach(path -> list.add(path.getAbsolutePath()));
+        model.addAttribute("listenDrivers", list);
+
         return "home";
     }
 

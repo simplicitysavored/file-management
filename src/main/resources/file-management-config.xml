@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<config>
+    <listen-folder>
+        <item>/Volumes/Repository</item>
+    </listen-folder>
+
+<!--保护的文件：规则配置-->
+    <protect-file>
+        <path>
+            <item>README.md</item>
+            <item>Parallels虚拟机(Mac下融合运行WIN超好用，已破解购买).dmg</item>
+        </path>
+        <file-path-regex>
+            <item>^\d{3}_.*$</item>
+        </file-path-regex>
+    </protect-file>
+</config>

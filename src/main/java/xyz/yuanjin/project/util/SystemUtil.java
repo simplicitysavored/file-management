@@ -4,6 +4,8 @@ import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.stereotype.Component;
+import xyz.yuanjin.project.pojo.config.ProtectConfig;
+import xyz.yuanjin.project.pojo.config.SystemConfig;
 import xyz.yuanjin.project.property.SystemProperty;
 
 import java.io.File;
@@ -12,6 +14,7 @@ import java.net.NetworkInterface;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 import java.util.regex.Pattern;
 
 /**
@@ -32,11 +35,23 @@ public class SystemUtil implements ApplicationContextAware {
      * @return {Boolean}
      */
     public static boolean isProtectFile(File file) {
-        for (Pattern pattern : SystemUtil.systemProperty().getNasProtectFilePatterns()) {
+//        for (Pattern pattern : SystemUtil.systemProperty().getNasProtectFilePatterns()) {
+//            if (pattern.matcher(file.getAbsolutePath()).matches()) {
+//                return true;
+//            }
+//        }
+        ProtectConfig protectConfig = SystemConfig.getInstance().getProtectConfig();
+        for (String filePath : protectConfig.getFilePath()) {
+            if (Objects.equals(filePath, file.getAbsolutePath())) {
+                return true;
+            }
+        }
+        for (Pattern pattern : protectConfig.getFilePathRegexList()) {
             if (pattern.matcher(file.getAbsolutePath()).matches()) {
                 return true;
             }
         }
+
         return false;
     }
 
