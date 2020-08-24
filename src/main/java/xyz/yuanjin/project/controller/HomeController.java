@@ -3,10 +3,7 @@ package xyz.yuanjin.project.controller;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.StringUtils;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import xyz.yuanjin.project.common.enums.ResponseEnum;
 import xyz.yuanjin.project.common.util.FileUtil;
@@ -41,7 +38,7 @@ public class HomeController {
      * @param model model
      * @return {String}
      */
-    @GetMapping("/")
+    @RequestMapping("/")
     public String home(Model model) {
 
 //        model.addAttribute("listenDrivers", SystemUtil.systemProperty().getNasListenFileList());

@@ -2,6 +2,7 @@
 <config>
     <listen-folder>
         <item>/Volumes/Repository</item>
+        <item>/Users/yuanjin</item>
     </listen-folder>
 
 <!--保护的文件：规则配置-->

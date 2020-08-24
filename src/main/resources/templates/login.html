@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>登陆</title>
+    <link rel="stylesheet" href="/static/bootstrap/css/bootstrap.css">
+    <style type="text/css">
+        .login-box {
+            margin: 100px 0 0 0;
+            width: 30%;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="login-box">
+        <form class="form-horizontal" id="loginForm">
+            <div class="form-group">
+                <div class="col-sm-10">
+                    <input type="text" class="form-control" name="username" placeholder="帐号" aria-label="帐号">
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-sm-10">
+                    <input type="password" class="form-control" name="password" placeholder="密码" aria-label="密码">
+                </div>
+            </div>
+            <div class="form-group">
+                <div class=" col-sm-10">
+                    <div class="checkbox">
+                        <label>
+                            <input type="checkbox"> 记住登陆状态
+                        </label>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-sm-offset-2 col-sm-10">
+                    <button type="button" class="btn btn-default" id="loginSubmit" onclick="loginCheck()">登&nbsp;&nbsp;&nbsp;&nbsp;陆
+                    </button>
+                    <button type="button" class="btn btn-default" onclick="alert('待开发')">注&nbsp;&nbsp;&nbsp;&nbsp;册
+                    </button>
+                </div>
+            </div>
+        </form>
+
+    </div>
+</div>
+
+
+</body>
+<script type="text/javascript" src="/static/js/jquery-2.1.1.min.js"></script>
+<script type="text/javascript" src="/static/js/jinn-init.js"></script>
+<script type="text/javascript" src="/static/js/jinn-ajax-util.js"></script>
+<!--<script type="text/javascript" src="/static/js/jinn-common.js"></script>-->
+<script type="text/javascript">
+
+    $('input[name=password]').bind('keypress', function (event) {
+        console.log('keyCode', event.keyCode);
+        if (event.keyCode === 13) {
+            loginCheck();
+        }
+    });
+
+    function loginCheck() {
+        AjaxUtil.postForm("/loginCheck", "loginForm", function (data) {
+            console.log("login response", data);
+            if (data.statusCode === 200) {
+                localStorage.setItem("token", data.token);
+                JINN_INIT.jumpPage({url: "/"});
+                //
+                // AjaxUtil.ajaxAsyncPostJson('/', {}, function (html) {
+                //     window.location.href = '';
+                // })
+
+            } else {
+                alert(data.message);
+            }
+        })
+    }
+</script>
+</html>

@@ -94,6 +94,8 @@
 
 <script type="text/javascript" src="/static/js/sweet-alert.min.js"></script>
 <script type="text/javascript" src="/static/js/jinn-ajax-util.js"></script>
+<script type="text/javascript" src="/static/js/jinn-init.js"></script>
+
 <script>
     let queryParams;
 
@@ -127,8 +129,13 @@
             classes: 'table table-bordered table-hover',
             responseHandler: responseHandler(),
             onLoadSuccess: function (data) {
+                console.log('table success data', data);
                 /*设置当前所在位置*/
                 $('input[name=position]').val(data.extendInfo);
+            },
+            onLoadError: function(data) {
+                console.log('table error data', data);
+                window.location.reload();
             },
             queryParams: function (params) {
                 if (!queryParams) {
@@ -311,7 +318,7 @@
 
         alert(rows[0].absolutePath);
 
-        window.open("/downloadV2?path="+rows[0].absolutePathEncode, "_blank")
+        window.open("/downloadV2?token="+localStorage.getItem('token')+"&path="+rows[0].absolutePathEncode, "_blank")
 
     }
 </script>

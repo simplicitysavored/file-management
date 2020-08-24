@@ -1,0 +1,53 @@
+package xyz.yuanjin.project.intercepter;
+
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.web.servlet.HandlerInterceptor;
+import org.springframework.web.servlet.ModelAndView;
+import xyz.yuanjin.project.common.util.StringUtil;
+import xyz.yuanjin.project.util.JwtPayload;
+import xyz.yuanjin.project.util.JwtUtil;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+/**
+ * @author yuanjin
+ */
+@Slf4j
+public class AuthFileManagementFilter implements HandlerInterceptor {
+    @Override
+    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
+
+        String token = request.getHeader("token");
+        if (null == token) {
+            token = request.getParameter("token");
+        }
+        log.info("preHandle remote uri: {}, token: {}", request.getRequestURI(), token);
+
+        String uri = request.getRequestURI();
+        if (uri.startsWith("/login") || uri.startsWith("/loginCheck") || uri.startsWith("/error") || uri.startsWith("/static")) {
+            return true;
+        }
+
+
+
+//        String fileAuthToken = request.getHeader("file-auth-token");
+        JwtPayload payload = JwtUtil.authToken(token);
+        if (payload == null) {
+            response.sendRedirect("/login");
+            return false;
+        }
+        return true;
+    }
+
+    @Override
+    public void postHandle(HttpServletRequest request, HttpServletResponse response, Object handler, ModelAndView modelAndView) throws Exception {
+
+        log.info("postHandle execute");
+    }
+
+    @Override
+    public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex) throws Exception {
+        log.info("afterCompletion execute");
+    }
+}
