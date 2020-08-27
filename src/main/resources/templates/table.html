@@ -29,15 +29,7 @@
     <div id="toolbar">
         <div class="col-md-2">
             <div class="input-group">
-                <select class="form-control" id="driverRoot" aria-label="加载磁盘">
-                    <option value="C:\\">C盘</option>
-                    <option value="/Volumes/Repository" selected>/Volumes/Repository</option>
-                    <option value="/Users/yuanjin" selected>/Users/yuanjin</option>
-                    <option value="E:\\">E盘</option>
-                    <option value="F:\\">F盘</option>
-                    <option value="G:\\">G盘</option>
-                    <option value="H:\\">H盘</option>
-                </select>
+                <select class="form-control" id="driverRoot" aria-label="加载磁盘"></select>
                 <a type="button" class="input-group-addon btn btn-info" onclick="reloadDataList()"><span
                         class="glyphicon glyphicon-repeat"></span></a>
             </div>
@@ -95,13 +87,24 @@
         $DOM_TIP_MESSAGE, // 提示框
         $DOM_DRIVER_DROPDOWN; // 驱动器下拉框
 
+    let $MODAL_CREATE // 弹窗-新增文件夹
+    ;
+
     $(function () {
         $DOM_TIP_MESSAGE = $('#tipMessage');
         $DOM_TABLE = $('#table');
         $DOM_DRIVER_DROPDOWN = $('#driverRoot');
+        $MODAL_CREATE = $('#MODAL_CREATE');
 
         reLoadDriverDropdownByGetListenList();
 
+
+        $DOM_DRIVER_DROPDOWN.change(function () {
+            reloadDataList($(this).val());
+        })
+    }); // $(function(){}) end
+
+    function initialTable() {
         $DOM_TABLE.bootstrapTable({
             toolbar: '#toolbar',
             url: "/table/list",
@@ -194,12 +197,7 @@
             ]
         }); // end bootstrapTable
 
-
-        $DOM_DRIVER_DROPDOWN.change(function () {
-            reloadDataList($(this).val());
-        })
-    }); // $(function(){}) end
-
+    }
 
     /**
      * 加载监听的驱动
@@ -215,6 +213,8 @@
                     }
                 }
             }
+
+            initialTable();
         })
     }
 
@@ -238,11 +238,20 @@
     }
 
     function openCreateModal() {
-        $('#MODAL_CREATE').modal({
+        $MODAL_CREATE.modal({
             show: true,
             backdrop: 'static',
             keyboard: false
         });
+        setTimeout(function () {
+            $MODAL_CREATE.find('input[name=name]').focus();
+        }, 500);
+        $MODAL_CREATE.find('input[name=name]').bind('keypress', function (e) {
+            if (event.keyCode === 13) {
+                createFolder();
+            }
+        })
+
     }
 
     /**
@@ -254,7 +263,6 @@
         AjaxUtil.postFormWithToken(url, formId,
             function (data) {
                 if (data.statusCode === 200) {
-                    alert('成功');
                     $('#MODAL_CREATE').modal('hide');
                     reloadDataList($('#FORM_CREATE_FOLDER').find('input[name=position]').val());
                 } else {

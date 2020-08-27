@@ -54,9 +54,11 @@
 <script type="text/javascript" src="/static/js/jinn-ajax-util.js"></script>
 <!--<script type="text/javascript" src="/static/js/jinn-common.js"></script>-->
 <script type="text/javascript">
+    $(function () {
+        $('input[name=username]').focus();
+    });
 
     $('input[name=password]').bind('keypress', function (event) {
-        console.log('keyCode', event.keyCode);
         if (event.keyCode === 13) {
             loginCheck();
         }
@@ -68,12 +70,6 @@
             if (data.statusCode === 200) {
                 localStorage.setItem("token", data.token);
                 AjaxUtil.jumpPageWithToken("/table");
-                //JINN_INIT.jumpPage({url: "/"});
-                //
-                // AjaxUtil.ajaxAsyncPostJson('/', {}, function (html) {
-                //     window.location.href = '';
-                // })
-
             } else {
                 alert(data.message);
             }
