@@ -104,7 +104,9 @@ public class FileManagementService {
 
     public List<DropdownDTO> getListenFolderDTO() {
         List<DropdownDTO> dtoList = new ArrayList<>();
-        SystemConfig.getInstance().getListenFolderList().forEach(file -> dtoList.add(DropdownDTO.loadFile(file)));
+//        SystemConfig.getInstance().getListenFolderList().forEach(file -> dtoList.add(DropdownDTO.loadFile(file)));
+
+        SystemConfig.getInstance().getListenFolderMap().forEach((alias, file)-> dtoList.add(new DropdownDTO(file.getAbsolutePath(), alias)));
         return dtoList;
     }
 }

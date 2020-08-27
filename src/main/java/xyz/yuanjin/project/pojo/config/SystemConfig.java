@@ -12,7 +12,9 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.regex.Pattern;
 
 /**
@@ -26,6 +28,8 @@ public class SystemConfig {
      * 监听的文件夹
      */
     private List<File> listenFolderList;
+
+    private Map<String, File> listenFolderMap;
     /**
      * 受保护的文件的规则配置
      */
@@ -53,6 +57,7 @@ public class SystemConfig {
         listenFolderStrList = new ArrayList<>();
         listenFolderList = new ArrayList<>();
         protectConfig = new ProtectConfig();
+        listenFolderMap = new HashMap<>();
     }
 
     private void loadSystemConfig() throws IOException, DocumentException {
@@ -73,10 +78,16 @@ public class SystemConfig {
         Element listenEl = rootEl.element("listen-folder");
         List<Element> listenItemEl = listenEl.elements("item");
         listenItemEl.forEach(itemEl -> {
-            File file = new File(itemEl.getTextTrim());
+            String value = itemEl.getTextTrim();
+            File file = new File(value);
             if (file.exists()) {
-                listenFolderStrList.add(itemEl.getTextTrim());
+                listenFolderStrList.add(value);
                 listenFolderList.add(file);
+                String alias = itemEl.attributeValue("alias");
+                if (alias == null) {
+                    alias = value;
+                }
+                listenFolderMap.put(alias, file);
             } else {
                 log.error("系统配置失效，监听路径不存在：{}", itemEl.getTextTrim());
             }

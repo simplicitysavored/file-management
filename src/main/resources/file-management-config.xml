@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <config>
     <listen-folder>
-        <item>/Volumes/Repository</item>
-        <item>/Users/yuanjin</item>
-        <item>/Users/yuanjin/Documents</item>
+        <item alias="我的资源库">/Volumes/Repository</item>
+        <item alias="本机个人文件">/Users/yuanjin</item>
+        <item alias="本机文档">/Users/yuanjin/Documents</item>
     </listen-folder>
 
 <!--保护的文件：规则配置-->

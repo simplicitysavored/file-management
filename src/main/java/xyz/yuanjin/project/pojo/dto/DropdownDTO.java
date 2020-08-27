@@ -20,6 +20,14 @@ public class DropdownDTO {
      */
     private String desc;
 
+    public DropdownDTO(String value, String desc) {
+        this.value = value;
+        this.desc = desc;
+    }
+
+    public DropdownDTO() {
+    }
+
     public static DropdownDTO loadFile(File file) {
         DropdownDTO dto = new DropdownDTO();
         dto.setValue(file.getAbsolutePath());
