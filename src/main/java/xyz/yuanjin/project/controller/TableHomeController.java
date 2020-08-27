@@ -55,9 +55,10 @@ public class TableHomeController {
                     .setData(folderBean.getFiles())
                     .setExtendInfo(folderBean.getAbsolutePath());
         } catch (Exception e) {
-            //log.error(e.getMessage(), e);
+            log.error(e.getMessage(), e);
             return ResponseUtil
                     .response(ResponseEnum.PARAMS_ERROR)
+                    .setMessage(e.getMessage())
                     .setData(new ArrayList<>());
         }
 

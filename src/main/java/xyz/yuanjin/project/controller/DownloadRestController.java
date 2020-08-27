@@ -5,6 +5,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletResponse;
@@ -39,8 +40,8 @@ public class DownloadRestController {
                 headers, HttpStatus.OK);
     }
 
-    @GetMapping("/downloadV2")
-    public void downloadV2(String path, HttpServletResponse response) throws Exception {
+    @GetMapping("/downloadV2/{fileName}")
+    public void downloadV2(@PathVariable(value = "fileName", required = false) String fileName, String path, HttpServletResponse response) throws Exception {
         // application/octet-stream
         File file = new File(path);
         response.setContentType("application/octet-stream");

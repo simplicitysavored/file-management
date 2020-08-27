@@ -1,14 +1,18 @@
 package xyz.yuanjin.project.intercepter;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
+import xyz.yuanjin.project.common.util.FileUtil;
 import xyz.yuanjin.project.common.util.StringUtil;
 import xyz.yuanjin.project.util.JwtPayload;
 import xyz.yuanjin.project.util.JwtUtil;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.InputStream;
 
 /**
  * @author yuanjin
@@ -22,6 +26,7 @@ public class AuthFileManagementFilter implements HandlerInterceptor {
         if (null == token) {
             token = request.getParameter("token");
         }
+
         log.info("preHandle remote uri: {}, token: {}", request.getRequestURI(), token);
 
         String uri = request.getRequestURI();

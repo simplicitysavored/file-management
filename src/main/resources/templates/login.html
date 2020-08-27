@@ -50,7 +50,7 @@
 
 </body>
 <script type="text/javascript" src="/static/js/jquery-2.1.1.min.js"></script>
-<script type="text/javascript" src="/static/js/jinn-init.js"></script>
+<!--<script type="text/javascript" src="/static/js/jinn-init.js"></script>-->
 <script type="text/javascript" src="/static/js/jinn-ajax-util.js"></script>
 <!--<script type="text/javascript" src="/static/js/jinn-common.js"></script>-->
 <script type="text/javascript">
@@ -63,11 +63,12 @@
     });
 
     function loginCheck() {
-        AjaxUtil.postForm("/loginCheck", "loginForm", function (data) {
+        AjaxUtil.postFormWithToken("/loginCheck", "loginForm", function (data) {
             console.log("login response", data);
             if (data.statusCode === 200) {
                 localStorage.setItem("token", data.token);
-                JINN_INIT.jumpPage({url: "/"});
+                AjaxUtil.jumpPageWithToken("/");
+                //JINN_INIT.jumpPage({url: "/"});
                 //
                 // AjaxUtil.ajaxAsyncPostJson('/', {}, function (html) {
                 //     window.location.href = '';

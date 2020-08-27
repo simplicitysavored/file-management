@@ -91,27 +91,27 @@ window.addEventListener('ajaxAbort', function (e) {
     console.log('ajaxAbort',e.detail.responseText); // XHR 返回的内容
 });
 
-let JINN_INIT = {};
-JINN_INIT.jumpPage = function (param) {
-    param = param || {url: '/', method: 'get', data: {}};
-    param.url = param.url || "/";
-    param.method = param.method || "get";
-    param.data = param.data || {};
-
-    // xhr.open(param.method, param.url);
-    // xhr.send();
-
-    let formBody = '<form id="jumpPageForm" action="'+param.url+'" method="'+param.method+'" style="display: none;">\n';
-    formBody += '<input type="hidden" name="token" value="'+localStorage.getItem('token')+'" />\n';
-    for (let dataKey in param.data) {
-        formBody += '<input type="hidden" name="'+dataKey+'" value="'+param.data[dataKey]+'" />\n';
-    }
-    formBody += '</form>';
-
-
-    $('body').append(formBody);
-
-    // $('#jumpPageForm').click();
-
-    $('#jumpPageForm').submit();
-};
+// let JINN_INIT = {};
+// JINN_INIT.jumpPage = function (param) {
+//     param = param || {url: '/', method: 'get', data: {}};
+//     param.url = param.url || "/";
+//     param.method = param.method || "get";
+//     param.data = param.data || {};
+//
+//     // xhr.open(param.method, param.url);
+//     // xhr.send();
+//
+//     let formBody = '<form id="jumpPageForm" action="'+param.url+'" method="'+param.method+'" style="display: none;">\n';
+//     formBody += '<input type="hidden" name="token" value="'+localStorage.getItem('token')+'" />\n';
+//     for (let dataKey in param.data) {
+//         formBody += '<input type="hidden" name="'+dataKey+'" value="'+param.data[dataKey]+'" />\n';
+//     }
+//     formBody += '</form>';
+//
+//
+//     $('body').append(formBody);
+//
+//     // $('#jumpPageForm').click();
+//
+//     $('#jumpPageForm').submit();
+// };

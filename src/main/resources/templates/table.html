@@ -40,6 +40,7 @@
                 <select class="form-control" id="driverRoot" aria-label="加载磁盘">
                     <option value="C:\\">C盘</option>
                     <option value="/Volumes/Repository" selected>/Volumes/Repository</option>
+                    <option value="/Users/yuanjin" selected>/Users/yuanjin</option>
                     <option value="E:\\">E盘</option>
                     <option value="F:\\">F盘</option>
                     <option value="G:\\">G盘</option>
@@ -94,7 +95,7 @@
 
 <script type="text/javascript" src="/static/js/sweet-alert.min.js"></script>
 <script type="text/javascript" src="/static/js/jinn-ajax-util.js"></script>
-<script type="text/javascript" src="/static/js/jinn-init.js"></script>
+<!--<script type="text/javascript" src="/static/js/jinn-init.js"></script>-->
 
 <script>
     let queryParams;
@@ -133,9 +134,14 @@
                 /*设置当前所在位置*/
                 $('input[name=position]').val(data.extendInfo);
             },
-            onLoadError: function(data) {
+            onLoadError: function (data) {
                 console.log('table error data', data);
-                window.location.reload();
+                //window.location.reload();
+            },
+            ajaxOptions: {
+                headers: {
+                    'token': localStorage.getItem('token')
+                }
             },
             queryParams: function (params) {
                 if (!queryParams) {
@@ -233,7 +239,7 @@
     function createFolder() {
         let url = '/table/create';
         let formId = 'FORM_CREATE_FOLDER';
-        AjaxUtil.postForm(url, formId,
+        AjaxUtil.postFormWithToken(url, formId,
             function (data) {
                 if (data.statusCode === 200) {
                     alert('成功');
@@ -318,7 +324,13 @@
 
         alert(rows[0].absolutePath);
 
-        window.open("/downloadV2?token="+localStorage.getItem('token')+"&path="+rows[0].absolutePathEncode, "_blank")
+        //window.open("/downloadV2?token="+localStorage.getItem('token')+"&path="+rows[0].absolutePathEncode, "_blank")
+
+        // AjaxUtil.downloadWithToken("/downloadV2?path=" + rows[0].absolutePathEncode);
+        AjaxUtil.downloadWithToken({
+            name: rows[0].name,
+            path: rows[0].absolutePathEncode
+        })
 
     }
 </script>

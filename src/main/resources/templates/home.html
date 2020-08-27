@@ -38,12 +38,13 @@
         </ul>
     </div>
     <div class="col-sm-12">
-            <a href="javascript:JINN_INIT.jumpPage({url: '/table'})" class="btn btn-default">Bootstrap-table 样式</a>
+            <a href="javascript:AjaxUtil.jumpPageWithToken('/table')" class="btn btn-default">Bootstrap-table 样式</a>
     </div>
 </div>
 </body>
 <script type="text/javascript" src="/static/js/jquery-2.1.1.min.js"></script>
-<script type="text/javascript" src="/static/js/jinn-init.js"></script>
+<!--<script type="text/javascript" src="/static/js/jinn-init.js"></script>-->
+<script type="text/javascript" src="/static/js/jinn-ajax-util.js"></script>
 <script type="text/javascript">
     function loadDriver($driver) {
         $.get('http://localhost:8888/nas?path=' + encodeURI($driver), function (data) {

@@ -24,7 +24,7 @@ public class JwtUtil {
 
         JwtPayload payload = new JwtPayload();
         payload.setUid("用户ID");
-        payload.setExp(new Date(System.currentTimeMillis() + 60_000));
+        payload.setExp(new Date(System.currentTimeMillis() + 60_000 * 10));
         payload.setIat(new Date());
         payload.setIss("System");
 
