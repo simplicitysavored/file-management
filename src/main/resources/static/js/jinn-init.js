@@ -1,5 +1,7 @@
 /**
  * 转自：http://blog.ttionya.com/article-1511.html
+ *
+ * @deprecated 不再使用了
  */
 ;(function () {
     if (typeof window.CustomEvent === "function") return false;
@@ -84,11 +86,11 @@ window.addEventListener('ajaxReadyStateChange', function (e) {
          */
         XHR.setRequestHeader('token', localStorage.getItem('token'));
     }
-    console.log('ajaxReadyStateChange',e.detail); // XMLHttpRequest Object
+    console.log('ajaxReadyStateChange', e.detail); // XMLHttpRequest Object
 });
 
 window.addEventListener('ajaxAbort', function (e) {
-    console.log('ajaxAbort',e.detail.responseText); // XHR 返回的内容
+    console.log('ajaxAbort', e.detail.responseText); // XHR 返回的内容
 });
 
 // let JINN_INIT = {};
