@@ -67,7 +67,7 @@
             console.log("login response", data);
             if (data.statusCode === 200) {
                 localStorage.setItem("token", data.token);
-                AjaxUtil.jumpPageWithToken("/");
+                AjaxUtil.jumpPageWithToken("/table");
                 //JINN_INIT.jumpPage({url: "/"});
                 //
                 // AjaxUtil.ajaxAsyncPostJson('/', {}, function (html) {

@@ -21,10 +21,11 @@ import java.util.regex.Pattern;
 @Data
 @Slf4j
 public class SystemConfig {
+    private List<String> listenFolderStrList;
     /**
      * 监听的文件夹
      */
-    private List<File> listenFolder;
+    private List<File> listenFolderList;
     /**
      * 受保护的文件的规则配置
      */
@@ -49,7 +50,8 @@ public class SystemConfig {
     }
 
     private SystemConfig() {
-        listenFolder = new ArrayList<>();
+        listenFolderStrList = new ArrayList<>();
+        listenFolderList = new ArrayList<>();
         protectConfig = new ProtectConfig();
     }
 
@@ -73,7 +75,8 @@ public class SystemConfig {
         listenItemEl.forEach(itemEl -> {
             File file = new File(itemEl.getTextTrim());
             if (file.exists()) {
-                listenFolder.add(file);
+                listenFolderStrList.add(itemEl.getTextTrim());
+                listenFolderList.add(file);
             } else {
                 log.error("系统配置失效，监听路径不存在：{}", itemEl.getTextTrim());
             }

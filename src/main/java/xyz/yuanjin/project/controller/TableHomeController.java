@@ -9,13 +9,15 @@ import xyz.yuanjin.project.common.enums.ResponseEnum;
 import xyz.yuanjin.project.common.util.ResponseUtil;
 import xyz.yuanjin.project.pojo.FolderBean;
 import xyz.yuanjin.project.pojo.PageParam;
+import xyz.yuanjin.project.pojo.config.SystemConfig;
+import xyz.yuanjin.project.pojo.dto.DropdownDTO;
 import xyz.yuanjin.project.pojo.dto.TableQueryDTO;
 import xyz.yuanjin.project.service.FileManagementService;
 
 import javax.annotation.Resource;
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Map;
+import java.util.List;
 
 @Slf4j
 @Controller
@@ -32,6 +34,16 @@ public class TableHomeController {
     @GetMapping("")
     public String table() {
         return "/table";
+    }
+
+    @PostMapping("/getListenList")
+    public @ResponseBody
+    ResponseDTO getListenList() {
+        List<DropdownDTO> dto = fileManagementService.getListenFolderDTO();
+
+        return ResponseUtil
+                .success()
+                .setData(dto);
     }
 
     /**

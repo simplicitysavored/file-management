@@ -5,6 +5,8 @@ import org.springframework.util.CollectionUtils;
 import xyz.yuanjin.project.pojo.BaseBean;
 import xyz.yuanjin.project.pojo.FileBean;
 import xyz.yuanjin.project.pojo.FolderBean;
+import xyz.yuanjin.project.pojo.config.SystemConfig;
+import xyz.yuanjin.project.pojo.dto.DropdownDTO;
 import xyz.yuanjin.project.util.SystemUtil;
 
 import java.io.File;
@@ -98,5 +100,11 @@ public class FileManagementService {
             throw new Exception("这个不是文件夹");
         }
         return file;
+    }
+
+    public List<DropdownDTO> getListenFolderDTO() {
+        List<DropdownDTO> dtoList = new ArrayList<>();
+        SystemConfig.getInstance().getListenFolderList().forEach(file -> dtoList.add(DropdownDTO.loadFile(file)));
+        return dtoList;
     }
 }

@@ -11,14 +11,6 @@
     <script type="text/javascript" src="/static/js/jquery-2.1.1.min.js"></script>
     <script type="text/javascript" src="/static/bootstrap/js/bootstrap.min.js"></script>
     <script type="text/javascript" src="/static/bootstrap-table/bootstrap-table.min.js"></script>
-    <script type="text/javascript" src="/static/bootstrap-table/locale/bootstrap-table-zh-CN.min.js"></script>
-
-    <style type="text/css">
-        /*表格行选中时的颜色*/
-        .tr-checked {
-            background-color: #f5f5f5;
-        }
-    </style>
 </head>
 <body>
 <!--
@@ -95,7 +87,6 @@
 
 <script type="text/javascript" src="/static/js/sweet-alert.min.js"></script>
 <script type="text/javascript" src="/static/js/jinn-ajax-util.js"></script>
-<!--<script type="text/javascript" src="/static/js/jinn-init.js"></script>-->
 
 <script>
     let queryParams;
@@ -104,14 +95,12 @@
         $DOM_TIP_MESSAGE, // 提示框
         $DOM_DRIVER_DROPDOWN; // 驱动器下拉框
 
-    function responseHandler() {
-        console.log('responseHandler')
-    }
-
     $(function () {
         $DOM_TIP_MESSAGE = $('#tipMessage');
         $DOM_TABLE = $('#table');
         $DOM_DRIVER_DROPDOWN = $('#driverRoot');
+
+        reLoadDriverDropdownByGetListenList();
 
         $DOM_TABLE.bootstrapTable({
             toolbar: '#toolbar',
@@ -210,6 +199,29 @@
             reloadDataList($(this).val());
         })
     }); // $(function(){}) end
+
+
+    /**
+     * 加载监听的驱动
+     */
+    function reLoadDriverDropdownByGetListenList() {
+        AjaxUtil.ajaxAsyncPostJsonWithToken('/table/getListenList', {}, function (data) {
+            if (data.statusCode === 200) {
+                if (data.data) {
+                    $DOM_DRIVER_DROPDOWN.empty();
+                    for (let i = 0; i < data.data.length; i++) {
+                        let item = data.data[i];
+                        $DOM_DRIVER_DROPDOWN.append('<option value="' + item.value + '">' + item.desc + '</option>');
+                    }
+                }
+            }
+        })
+    }
+
+    function responseHandler() {
+        console.log('responseHandler')
+    }
+
 
     /**
      * 加载表格数据
