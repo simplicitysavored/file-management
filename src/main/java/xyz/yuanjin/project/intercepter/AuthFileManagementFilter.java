@@ -33,11 +33,11 @@ public class AuthFileManagementFilter implements HandlerInterceptor {
             return true;
         }
 
-//        JwtPayload payload = JwtUtil.authToken(token);
-//        if (payload == null) {
-//            response.sendRedirect("/login");
-//            return false;
-//        }
+        JwtPayload payload = JwtUtil.authToken(token);
+        if (payload == null) {
+            response.sendRedirect("/login");
+            return false;
+        }
         return true;
     }
 
