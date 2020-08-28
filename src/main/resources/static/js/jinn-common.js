@@ -107,7 +107,11 @@ const YJ_COMM = {
             async: true,
             processData: false,  // 告诉jQuery不要去处理发送的数据
             contentType: false,   // 告诉jQuery不要去设置Content-Type请求头
+            beforeSend: function(xhr) {
+                xhr.setRequestHeader('token', localStorage.getItem('token'));
+            },
             success: function (responseText) {
+                console.log('ajax option', this);
                 if (conf.file.size <= nextSize) {//如果上传完成，则跳出继续上传
                     if (conf.processBarDom) {
                         conf.processBarDom.finish();

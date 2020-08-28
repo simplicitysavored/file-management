@@ -37,7 +37,7 @@
         <div class="col-md-10">
             <div class="btn-group" role="group" aria-label="操作按钮组">
                 <button class="btn btn-default" onclick="openCreateModal()">新建</button>
-                <button class="btn btn-default" onclick="alert('待开发')">上传</button>
+                <button class="btn btn-default" onclick="openUploadModal()">上传</button>
                 <button class="btn btn-default" onclick="downloadFileV2()">下载</button>
                 <button class="btn btn-default" onclick="deleteFile()">删除</button>
                 <button class="btn btn-default" onclick="getSelectedRow()">获取选中行</button>
@@ -61,7 +61,7 @@
                 <form action="javascript:void(0)" id="FORM_CREATE_FOLDER">
                     <div class="input-group">
                         <input type="hidden" name="position" value="" aria-label="位置路径">
-                        <span class="input-group-addon" id="basic-addon1">文件夹名称：</span>
+                        <span class="input-group-addon">文件夹名称：</span>
                         <input type="text" class="form-control" name="name" placeholder="文件夹名称"
                                aria-label="文件夹名称">
                     </div>
@@ -75,10 +75,37 @@
     </div>
 </div>
 
+<!-- 上传文件 Modal -->
+<div class="modal fade" id="MODAL_UPLOAD" tabindex="-1" role="dialog" aria-labelledby="MODAL_UPLOAD_LABEL">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">上传</h4>
+            </div>
+            <div class="modal-body">
+                <form action="javascript:void(0)" id="FORM_UPLOAD">
+                    <div class="input-group">
+                        <input type="hidden" name="position" value="" aria-label="位置路径">
+                        <span class="input-group-addon">请选择文件：</span>
+                        <input type="file" class="form-control" name="uploadFile" id="uploadFile" placeholder="请选择上传的文件"
+                               aria-label="请选择上传的文件">
+                    </div>
+                </form>
+                <div id="MyProcessBar"></div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                <button type="button" class="btn btn-primary" onclick="uploadFileToServer(this)">确认</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 </body>
 
 <script type="text/javascript" src="/static/js/sweet-alert.min.js"></script>
 <script type="text/javascript" src="/static/js/jinn-ajax-util.js"></script>
+<script type="text/javascript" src="/static/js/jinn-common.js"></script>
 
 <script>
     let queryParams;
@@ -88,6 +115,7 @@
         $DOM_DRIVER_DROPDOWN; // 驱动器下拉框
 
     let $MODAL_CREATE // 弹窗-新增文件夹
+        ,$MODAL_UPLOAD
     ;
 
     $(function () {
@@ -95,6 +123,7 @@
         $DOM_TABLE = $('#table');
         $DOM_DRIVER_DROPDOWN = $('#driverRoot');
         $MODAL_CREATE = $('#MODAL_CREATE');
+        $MODAL_UPLOAD = $('#MODAL_UPLOAD');
 
         reLoadDriverDropdownByGetListenList();
 
@@ -352,6 +381,50 @@
             path: rows[0].absolutePathEncode
         })
 
+    }
+
+    function openUploadModal() {
+        $MODAL_UPLOAD.modal({
+            show: true,
+            backdrop: 'static',
+            keyboard: false
+        });
+    }
+    function uploadFileToServer(btn) {
+        // AjaxUtil.postFormWithToken('/uploadBySplit', 'FORM_UPLOAD', function (data) {
+        //
+        // });
+
+        $(btn).button('loading');
+
+        let files = $('#uploadFile')[0].files;
+
+        let myData = files[0];
+
+        // 初始化进度条
+        let myBar = AjaxUtil.processBar.initProcess({
+            dom: 'MyProcessBar',
+            max: myData.size,
+            min: 0,
+            now: 0
+        });
+
+        let DOM_CURRENT_POSITION_FOLDER = $MODAL_UPLOAD.find('input[name=position]').eq(0);
+
+        AjaxUtil.uploadFileSplitWithToken({
+            processBarDom: myBar,
+            position: DOM_CURRENT_POSITION_FOLDER.val(),
+            file: myData,
+            blockSize: 1024 * 1024 * 10,
+            uploadFinish: function (responseText) {
+                $(btn).button('reset');
+                $MODAL_UPLOAD.modal('hide');
+                reloadDataList(DOM_CURRENT_POSITION_FOLDER.val());
+            },
+            uploadError: function (responseText) {
+                alert(responseText.message);
+            }
+        });
     }
 </script>
 </html>

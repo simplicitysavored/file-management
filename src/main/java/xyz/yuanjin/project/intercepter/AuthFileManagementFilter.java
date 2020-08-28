@@ -12,7 +12,6 @@ import xyz.yuanjin.project.util.JwtUtil;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.InputStream;
 
 /**
  * @author yuanjin
@@ -34,14 +33,11 @@ public class AuthFileManagementFilter implements HandlerInterceptor {
             return true;
         }
 
-
-
-//        String fileAuthToken = request.getHeader("file-auth-token");
-        JwtPayload payload = JwtUtil.authToken(token);
-        if (payload == null) {
-            response.sendRedirect("/login");
-            return false;
-        }
+//        JwtPayload payload = JwtUtil.authToken(token);
+//        if (payload == null) {
+//            response.sendRedirect("/login");
+//            return false;
+//        }
         return true;
     }
 
