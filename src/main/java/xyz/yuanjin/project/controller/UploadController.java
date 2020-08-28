@@ -23,7 +23,7 @@ import java.io.InputStream;
 @Slf4j
 @Controller
 public class UploadController {
-    private static final String SUFFIX_DOWNLOADING = "tmpFileDownloading";
+    private static final String SUFFIX_DOWNLOADING = ".tmpFileDownloading";
 
     /**
      * 分片上传(单个文件)

@@ -27,14 +27,16 @@
         </div>
     </div>
     <div id="toolbar">
-        <div class="col-md-2">
+        <div class="col-md-3">
             <div class="input-group">
                 <select class="form-control" id="driverRoot" aria-label="加载磁盘"></select>
                 <a type="button" class="input-group-addon btn btn-info" onclick="reloadDataList()"><span
+                        class="glyphicon glyphicon-home"></span></a>
+                <a type="button" class="input-group-addon btn btn-info" onclick="refreshCurrentPositionList()"><span
                         class="glyphicon glyphicon-repeat"></span></a>
             </div>
         </div>
-        <div class="col-md-10">
+        <div class="col-md-9">
             <div class="btn-group" role="group" aria-label="操作按钮组">
                 <button class="btn btn-default" onclick="openCreateModal()">新建</button>
                 <button class="btn btn-default" onclick="openUploadModal()">上传</button>
@@ -108,6 +110,7 @@
 <script type="text/javascript" src="/static/js/jinn-common.js"></script>
 
 <script>
+    let CURRENT_POSITION = null;
     let queryParams;
 
     let $DOM_TABLE, // 表格
@@ -151,12 +154,11 @@
             classes: 'table table-bordered table-hover',
             responseHandler: responseHandler(),
             onLoadSuccess: function (data) {
-                console.log('table success data', data);
                 /*设置当前所在位置*/
+                CURRENT_POSITION = data.extendInfo;
                 $('input[name=position]').val(data.extendInfo);
             },
             onLoadError: function (data) {
-                console.log('table error data', data);
                 //window.location.reload();
             },
             ajaxOptions: {
@@ -257,13 +259,16 @@
      */
     function reloadDataList(path) {
         path = path ? path : $DOM_DRIVER_DROPDOWN.val();
-        console.log('path', path);
         queryParams.queryObj = {
             path: path,
             dotBack: true
         };
         $DOM_TABLE.bootstrapTable('refresh', queryParams);
 
+    }
+
+    function refreshCurrentPositionList() {
+        reloadDataList(CURRENT_POSITION);
     }
 
     function openCreateModal() {
@@ -310,13 +315,11 @@
             if (rows[index].protect) {
                 protectNum++;
             }
-            console.log('row.protect', rows[index].protect);
         }
         if (protectNum > 0) {
             alert('存在受保护文件个数:' + protectNum);
             return false;
         }
-        console.log('selectedRow', rows);
         alert('选中了' + rows.length + '行');
     }
 
@@ -332,7 +335,6 @@
             if (rows[index].protect) {
                 protectNum++;
             }
-            console.log('row.protect', rows[index].protect);
         }
         if (protectNum > 0) {
             alert('删除失败, 存在受保护文件个数:' + protectNum);
@@ -418,10 +420,13 @@
             blockSize: 1024 * 1024 * 10,
             uploadFinish: function (responseText) {
                 $(btn).button('reset');
+                $MODAL_UPLOAD.find('form')[0].reset();
                 $MODAL_UPLOAD.modal('hide');
+                myBar.destroy();
                 reloadDataList(DOM_CURRENT_POSITION_FOLDER.val());
             },
             uploadError: function (responseText) {
+                $(btn).button('reset');
                 alert(responseText.message);
             }
         });

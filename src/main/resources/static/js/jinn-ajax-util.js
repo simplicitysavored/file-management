@@ -77,7 +77,6 @@ const AjaxUtil = {
         option.error = AjaxUtil.alterEmpty(option.error, function (req, msg, obj) {
         });
 
-        console.log('AjaxUtil.ajaxWithToken', option);
         $.ajax({
             async: option.async,
             url: option.url,
@@ -95,7 +94,6 @@ const AjaxUtil = {
                 option.complete(xhr, ts);
             },
             success: function (data) {
-                console.log('jinn-ajax-util option', this);
                 option.success(data);
             },
             error: function (req, msg, obj) {
@@ -227,6 +225,7 @@ const AjaxUtil = {
             skip: AjaxUtil.alterEmpty(options.skip, 0),
             blockSize: AjaxUtil.alterEmpty(options.blockSize, (1024 * 1024))
         };
+        console.log('processBarDom: ', options.processBarDom);
         // 初始化一个FormData对象
         let formData = new FormData();
         // 读取到结束位置
@@ -262,9 +261,9 @@ const AjaxUtil = {
                         return;
                     }
 
-                    console.log("已经上传了" + (conf.skip + 1) + "块文件: ", (conf.skip + 1) * conf.blockSize);
+                    // console.log("已经上传了" + (conf.skip + 1) + "块文件: ", (conf.skip + 1) * conf.blockSize);
                     if (conf.processBarDom) {
-                        conf.processBarDom.update((conf.skip + 1) * conf.blockSize);
+                        conf.processBarDom.updateDelay((conf.skip + 1) * conf.blockSize);
                     }
                     conf.skip++;
                     // 递归调用上传
@@ -285,10 +284,11 @@ const AjaxUtil = {
      * 进度条工具
      */
     processBar: {
+        oldDom: null,
         dom: null,
         timestamp: 0,
         conf: {
-            delay: 100, // ms
+            delay: 1000, // ms
             domId: null,
             max: null,
             min: null,
@@ -307,7 +307,7 @@ const AjaxUtil = {
 
             let percent = this.conf.now * 1.0 * 100 / this.conf.max;
 
-            this.dom = $('#' + this.conf.domId);
+            this.oldDom = $('#' + this.conf.domId);
 
             let template = '<div class="progress" id="' + this.conf.domId + '">\n' +
                 '                        <div class="progress-bar progress-bar-striped active" role="progressbar" aria-valuenow="' + this.conf.now + '" aria-valuemin="0" aria-valuemax="' + this.conf.max + '" style="min-width: 3em;width: ' + percent + '%">\n' +
@@ -316,7 +316,9 @@ const AjaxUtil = {
                 '                        </div>\n' +
                 '                    </div>';
 
-            this.dom.replaceWith(template);
+            $('#' + this.conf.domId).replaceWith(template);
+
+            this.dom = $('#' + this.conf.domId);
 
             return this;
         },
@@ -327,9 +329,11 @@ const AjaxUtil = {
         update: function (now) {
             let percent = now * 100.0 / this.conf.max;
             percent = percent.toFixed(2);
-            console.log(percent);
+            // console.log(percent);
+            console.log('update this.dom: ',this.dom);
             let subDom = this.dom.find("div[role=progressbar]").eq(0);
-            console.log(subDom);
+            console.log('update subDom: ', subDom);
+            // console.log(subDom);
             subDom.css('width', percent + "%");
             subDom.attr('aria-valuenow', now);
             subDom.find('span').eq(0).text(percent + "% Complete");
@@ -349,8 +353,12 @@ const AjaxUtil = {
             let time = new Date().getTime();
             if (time - this.timestamp >= this.conf.delay) {
                 this.timestamp = time;
+                console.log('update process bar: '+now);
                 this.update(now);
             }
+        },
+        destroy: function () {
+            this.dom.replaceWith(this.oldDom);
         }
     },
 };
