@@ -13,3 +13,6 @@ This is a vision。
 5. JWT
 
 > 依赖于 jinn-common
+
+## Some Learning Links
+* https://github.com/Snailclimb/JavaGuide
