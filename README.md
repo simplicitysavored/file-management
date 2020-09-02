@@ -14,13 +14,13 @@ This is a vision。
 
 > 依赖于 jinn-common
 
+## Some Learning Links
+* https://github.com/Snailclimb/JavaGuide
+  * [数据结构知识](https://github.com/Snailclimb/JavaGuide/blob/master/docs/dataStructures-algorithms/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84.md)
+
+
 ## Thanks
 
 <img src="http://image.yuanjin.xyz/img/jetbrains.png" alt="JetBrains' logo">
 
 Thanks to [JetBrains' support](https://www.jetbrains.com/?from=file-management)
-
-
-## Some Learning Links
-* https://github.com/Snailclimb/JavaGuide
-  * [数据结构知识](https://github.com/Snailclimb/JavaGuide/blob/master/docs/dataStructures-algorithms/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84.md)
