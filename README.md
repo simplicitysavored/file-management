@@ -15,7 +15,8 @@ This is a vision。
 > 依赖于 jinn-common
 
 ## Thanks
-![JetBrains' logo](http://image.yuanjin.xyz/img/jetbrains.png)
+
+<img src="http://image.yuanjin.xyz/img/jetbrains.png" alt="JetBrains' logo">
 
 Thanks to [JetBrains' support](https://www.jetbrains.com/?from=file-management)
 
