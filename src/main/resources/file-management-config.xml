@@ -14,6 +14,7 @@
         </path>
         <file-path-regex>
             <item>^\d{3}_.*$</item>
+            <item>^/Users.*$</item>
         </file-path-regex>
     </protect-file>
 </config>

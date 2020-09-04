@@ -118,7 +118,7 @@
         $DOM_DRIVER_DROPDOWN; // 驱动器下拉框
 
     let $MODAL_CREATE // 弹窗-新增文件夹
-        ,$MODAL_UPLOAD
+        , $MODAL_UPLOAD
     ;
 
     $(function () {
@@ -311,24 +311,33 @@
         let protectNum = 0;
 
         let rows = $DOM_TABLE.bootstrapTable('getSelections');
+        if (rows == null || rows.length === 0) {
+            swal("请先选择一行进行操作！");
+            return false;
+        }
+
         for (let index in rows) {
             if (rows[index].protect) {
                 protectNum++;
             }
         }
         if (protectNum > 0) {
-            alert('存在受保护文件个数:' + protectNum);
+            swal('存在受保护文件个数:' + protectNum);
             return false;
         }
-        alert('选中了' + rows.length + '行');
+        if (rows.length > 1) {
+            swal('只能选择一行进行操作！');
+            return false;
+        }
+        return rows[0];
     }
 
     /**
      * 删除文件
      */
     function deleteFile() {
-        alert('待开发');
-        return false;
+        // alert('待开发');
+        // return false;
         let protectNum = 0;
         let rows = $DOM_TABLE.bootstrapTable('getSelections');
         for (let index in rows) {
@@ -337,31 +346,57 @@
             }
         }
         if (protectNum > 0) {
-            alert('删除失败, 存在受保护文件个数:' + protectNum);
+            swal({
+                icon: 'warning',
+                text: '删除失败, 存在受保护文件个数:' + protectNum
+            });
             return false;
         }
-        let params = {};
-        swal({
-            title: '操作提示',
-            text: "是否确认删除选中的内容",
-            icon: "warning",
-            buttons: {
-                cancel: {
-                    text: "取消",
-                },
-                confirm: {
-                    text: "确认",
+        let row = getSelectedRow();
+        if (row) {
+            swal({
+                // title: '操作提示',
+                text: "是否确认删除: \n"+row.absolutePath,
+                icon: "warning",
+                buttons: {
+                    cancel: {
+                        text: "Cancel",
+                        value: false,
+                        visible: true,
+                        className: "",
+                        closeModal: true,
+                    },
+                    confirm: {
+                        text: "OK",
+                        value: true,
+                        visible: true,
+                        className: "",
+                        closeModal: true
+                    },
+                    // ... 支持自定义按钮
                 }
-            }
-        });
+            }).then(btnValue => {
+                if (btnValue) {
+                    let params = {
+                        path: row.absolutePath
+                    };
+                    AjaxUtil.ajaxAsyncPostJsonWithToken(
+                        "/table/delete",
+                        params,
+                        function (res) {
+                            alert(res.statusCode);
+                        }
+                    )
+                } else {
+                    console.log("点击了取消");
+                }
+                return "no.1 then end";
+            }).then(value => {
+                // 这个是前一个 then 返回的值
+                console.log("no.2 then receive:", value);
+            });
 
-        // AjaxUtil.ajaxAsyncPostJson(
-        //     "/table/delete",
-        //     params,
-        //     function (res) {
-        //         alert(res.statusCode);
-        //     }
-        // )
+        }
 
     }
 
@@ -392,6 +427,7 @@
             keyboard: false
         });
     }
+
     function uploadFileToServer(btn) {
         // AjaxUtil.postFormWithToken('/uploadBySplit', 'FORM_UPLOAD', function (data) {
         //
@@ -431,5 +467,6 @@
             }
         });
     }
+
 </script>
 </html>

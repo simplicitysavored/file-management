@@ -6,6 +6,7 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 import xyz.yuanjin.project.common.dto.ResponseDTO;
 import xyz.yuanjin.project.common.enums.ResponseEnum;
+import xyz.yuanjin.project.common.util.FileUtil;
 import xyz.yuanjin.project.common.util.ResponseUtil;
 import xyz.yuanjin.project.pojo.FolderBean;
 import xyz.yuanjin.project.pojo.PageParam;
@@ -117,7 +118,24 @@ public class TableHomeController {
      */
     @PostMapping("/delete")
     public @ResponseBody
-    ResponseDTO delete() {
-        return ResponseUtil.success();
+    ResponseDTO delete(@RequestParam("path") String path) {
+        File file = new File(path);
+
+        if (fileManagementService.isProtectFile(file)) {
+            return ResponseUtil.error("文件受保护，不可删除");
+        }
+
+        if (file.exists()) {
+            try {
+//                boolean success = FileUtil.delete(file);
+                boolean success = false;
+                return success ? ResponseUtil.success() : ResponseUtil.error("删除失败");
+            } catch (Exception e) {
+                e.printStackTrace();
+                return ResponseUtil.error(e.getMessage());
+            }
+        }
+        log.error("未找到文件：{}", path);
+        return ResponseUtil.error("未找到文件");
     }
 }
