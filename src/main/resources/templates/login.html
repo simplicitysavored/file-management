@@ -1,60 +1,47 @@
 <!DOCTYPE html>
-<html lang="en">
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<html lang="zh">
 <head>
-    <meta charset="UTF-8">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
     <title>登陆</title>
-    <link rel="stylesheet" href="/static/bootstrap/css/bootstrap.css">
-    <style type="text/css">
-        .login-box {
-            margin: 100px 0 0 0;
-            width: 30%;
-        }
-    </style>
+    <link rel="stylesheet" href="/static/css/login.css">
 </head>
-<body>
-<div class="container">
-    <div class="login-box">
-        <form class="form-horizontal" id="loginForm">
-            <div class="form-group">
-                <div class="col-sm-10">
-                    <input type="text" class="form-control" name="username" placeholder="帐号" aria-label="帐号">
-                </div>
-            </div>
-            <div class="form-group">
-                <div class="col-sm-10">
-                    <input type="password" class="form-control" name="password" placeholder="密码" aria-label="密码">
-                </div>
-            </div>
-            <div class="form-group">
-                <div class=" col-sm-10">
-                    <div class="checkbox">
-                        <label>
-                            <input type="checkbox"> 记住登陆状态
-                        </label>
-                    </div>
-                </div>
-            </div>
-            <div class="form-group">
-                <div class="col-sm-offset-2 col-sm-10">
-                    <button type="button" class="btn btn-default" id="loginSubmit" onclick="loginCheck()">登&nbsp;&nbsp;&nbsp;&nbsp;陆
-                    </button>
-                    <button type="button" class="btn btn-default" onclick="alert('待开发')">注&nbsp;&nbsp;&nbsp;&nbsp;册
-                    </button>
-                </div>
-            </div>
-        </form>
 
+<body>
+<div class="lowin">
+    <div class="lowin-brand">
+        <img src="/static/image/kodinger.jpg" alt="logo">
     </div>
+    <div class="lowin-wrapper">
+        <div class="lowin-box lowin-login">
+            <div class="lowin-box-inner">
+                <form id="loginForm">
+                    <p>登&nbsp;&nbsp;陆</p>
+                    <div class="lowin-group">
+                        <label>帐号<a href="#" class="login-back-link"></a> </label>
+                        <input type="text" autocomplete="email" name="username" value="admin"
+                               class="lowin-input" aria-label="帐号">
+                    </div>
+                    <div class="lowin-group password-group">
+                        <label>密码</label>
+                        <input type="password" name="password" autocomplete="current-password" class="lowin-input"
+                               aria-label="密码">
+                    </div>
+                    <button type="button" class="lowin-btn login-btn" onclick="loginCheck()">
+                        登&nbsp;&nbsp;陆
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+    <footer class="lowin-footer">
+
+    </footer>
 </div>
 
-
-</body>
 <script type="text/javascript" src="/static/js/jquery-2.1.1.min.js"></script>
-<!--<script type="text/javascript" src="/static/js/jinn-init.js"></script>-->
 <script type="text/javascript" src="/static/js/jinn-ajax-util.js"></script>
-<!--<script type="text/javascript" src="/static/js/jinn-common.js"></script>-->
-<script type="text/javascript">
+<script>
     $(function () {
         $('input[name=username]').focus();
     });
@@ -71,10 +58,12 @@
             if (data.statusCode === 200) {
                 localStorage.setItem("token", data.token);
                 AjaxUtil.jumpPageWithToken("/table");
+                // AjaxUtil.jumpPageWithToken({url: "/table", method: "post"});
             } else {
                 alert(data.message);
             }
         })
     }
 </script>
+</body>
 </html>

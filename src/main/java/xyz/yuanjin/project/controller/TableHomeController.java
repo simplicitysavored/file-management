@@ -32,7 +32,7 @@ public class TableHomeController {
      *
      * @return 页面
      */
-    @GetMapping("")
+    @RequestMapping("")
     public String table() {
         return "/table";
     }

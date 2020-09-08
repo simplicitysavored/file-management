@@ -113,7 +113,7 @@ const AjaxUtil = {
 
         option = AjaxUtil.alterEmpty(option, {});
         option.url = AjaxUtil.alterEmpty(option.url, "/");
-        option.method = AjaxUtil.alterEmpty(option.method, 'get');
+        option.method = AjaxUtil.alterEmpty(option.method, 'POST');
         option.data = AjaxUtil.alterEmpty(option.data, {});
 
         let jumpFormHtml = '<form id="jumpPageForm" action="' + option.url + '" method="' + option.method + '" style="display: none;">\n';
