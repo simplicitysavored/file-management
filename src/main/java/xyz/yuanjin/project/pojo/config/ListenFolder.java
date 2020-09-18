@@ -9,6 +9,7 @@ import lombok.Data;
  */
 @Data
 public class ListenFolder {
+    private String id;
     private String alias;
     private String value;
 }

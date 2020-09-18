@@ -6,6 +6,7 @@ import org.springframework.context.ApplicationContextAware;
 import org.springframework.stereotype.Component;
 import xyz.yuanjin.project.pojo.config.ProtectConfig;
 import xyz.yuanjin.project.pojo.config.SystemConfig;
+import xyz.yuanjin.project.pojo.dto.YjFile;
 import xyz.yuanjin.project.property.SystemProperty;
 
 import java.io.File;
@@ -35,6 +36,32 @@ public class SystemUtil implements ApplicationContextAware {
      * @return {Boolean}
      */
     public static boolean isProtectFile(File file) {
+//        for (Pattern pattern : SystemUtil.systemProperty().getNasProtectFilePatterns()) {
+//            if (pattern.matcher(file.getAbsolutePath()).matches()) {
+//                return true;
+//            }
+//        }
+        ProtectConfig protectConfig = SystemConfig.getInstance().getProtectConfig();
+        for (String filePath : protectConfig.getFilePath()) {
+            if (Objects.equals(filePath, file.getAbsolutePath())) {
+                return true;
+            }
+        }
+        for (Pattern pattern : protectConfig.getFilePathRegexList()) {
+            if (pattern.matcher(file.getAbsolutePath()).matches()) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+    /**
+     * 判定是否为[受保护]文件
+     *
+     * @param file 文件
+     * @return {Boolean}
+     */
+    public static boolean isProtectFile(YjFile file) {
 //        for (Pattern pattern : SystemUtil.systemProperty().getNasProtectFilePatterns()) {
 //            if (pattern.matcher(file.getAbsolutePath()).matches()) {
 //                return true;

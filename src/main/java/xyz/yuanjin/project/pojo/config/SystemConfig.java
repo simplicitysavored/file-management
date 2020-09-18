@@ -29,7 +29,14 @@ public class SystemConfig {
      */
     private List<File> listenFolderList;
 
-    private Map<String, File> listenFolderMap;
+    private Map<String, File> listenFolderAliasMap;
+
+    private Map<String, File> listenFolderIdMap;
+
+    private Map<String, String> listenFolderIdAliasMap;
+
+    private Map<String, String> listenFolderPathIdMap;
+
     /**
      * 受保护的文件的规则配置
      */
@@ -57,7 +64,10 @@ public class SystemConfig {
         listenFolderStrList = new ArrayList<>();
         listenFolderList = new ArrayList<>();
         protectConfig = new ProtectConfig();
-        listenFolderMap = new HashMap<>();
+        listenFolderAliasMap = new HashMap<>();
+        listenFolderIdMap = new HashMap<>();
+        listenFolderIdAliasMap = new HashMap<>();
+        listenFolderPathIdMap = new HashMap<>();
     }
 
     private void loadSystemConfig() throws IOException, DocumentException {
@@ -83,11 +93,18 @@ public class SystemConfig {
             if (file.exists()) {
                 listenFolderStrList.add(value);
                 listenFolderList.add(file);
+                String id = itemEl.attributeValue("id");
+                if (null == id || listenFolderIdMap.containsKey(id)) {
+                    throw new NullPointerException("监听驱动必须要有唯一的id");
+                }
                 String alias = itemEl.attributeValue("alias");
                 if (alias == null) {
                     alias = value;
                 }
-                listenFolderMap.put(alias, file);
+                listenFolderAliasMap.put(alias, file);
+                listenFolderIdMap.put(id, file);
+                listenFolderIdAliasMap.put(id, alias);
+                listenFolderPathIdMap.put(file.getAbsolutePath(), id);
             } else {
                 log.error("系统配置失效，监听路径不存在：{}", itemEl.getTextTrim());
             }

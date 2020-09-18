@@ -195,7 +195,13 @@
                     checkbox: true,
                     width: '5%',
                     align: 'center',
-                    //checkboxEnabled: false
+                    // checkboxEnabled: false
+                    formatter: function (fieldValue, rowData, rowIndex, fieldName) {
+                        if (rowData.name === '..') {
+                            return { disabled : true};
+                        }
+                        return {disabled: false};
+                    }
                 },
                 {
                     field: 'name',
@@ -383,7 +389,14 @@
                         "/table/delete",
                         params,
                         function (res) {
-                            alert(res.statusCode);
+                            if (res.statusCode === '200') {
+                                refreshCurrentPositionList();
+                            } else {
+                                swal({
+                                    text: res.message,
+                                    icon: "error",
+                                })
+                            }
                         }
                     )
                 } else {

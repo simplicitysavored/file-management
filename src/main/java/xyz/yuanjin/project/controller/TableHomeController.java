@@ -13,6 +13,7 @@ import xyz.yuanjin.project.pojo.PageParam;
 import xyz.yuanjin.project.pojo.config.SystemConfig;
 import xyz.yuanjin.project.pojo.dto.DropdownDTO;
 import xyz.yuanjin.project.pojo.dto.TableQueryDTO;
+import xyz.yuanjin.project.pojo.dto.YjFile;
 import xyz.yuanjin.project.service.FileManagementService;
 
 import javax.annotation.Resource;
@@ -60,7 +61,7 @@ public class TableHomeController {
 
         FolderBean folderBean = null;
         try {
-            File file = fileManagementService.checkFilePath(pageParam.getQueryObj().getPath());
+            YjFile file = fileManagementService.checkFilePathV2(pageParam.getQueryObj().getPath());
             folderBean = fileManagementService.loadFolder(file, pageParam.getQueryObj().getDotBack());
 
             return ResponseUtil
@@ -94,12 +95,12 @@ public class TableHomeController {
         if (StringUtils.isEmpty(name)) {
             return ResponseUtil.error("文件夹名成不能为空");
         }
-        File positionFile = new File(position);
+        YjFile positionFile = new YjFile(position);
         if (!(positionFile.exists() && positionFile.isDirectory())) {
             return ResponseUtil.error("位置错误");
         }
         try {
-            File newFile = new File(positionFile.getAbsolutePath().concat(File.separator).concat(name));
+            YjFile newFile = new YjFile(positionFile.getAbsolutePath().concat(File.separator).concat(name));
             if (newFile.exists() && newFile.isDirectory()) {
                 return ResponseUtil.error("文件夹已存在");
             }
@@ -119,7 +120,11 @@ public class TableHomeController {
     @PostMapping("/delete")
     public @ResponseBody
     ResponseDTO delete(@RequestParam("path") String path) {
-        File file = new File(path);
+        YjFile file = new YjFile(path);
+
+        if (file.isListenRoot()) {
+            return ResponseUtil.error("监听跟路径，不可删除");
+        }
 
         if (fileManagementService.isProtectFile(file)) {
             return ResponseUtil.error("文件受保护，不可删除");
@@ -127,8 +132,8 @@ public class TableHomeController {
 
         if (file.exists()) {
             try {
-//                boolean success = FileUtil.delete(file);
-                boolean success = false;
+                boolean success = FileUtil.delete(file.getSourceFile());
+//                boolean success = false;
                 return success ? ResponseUtil.success() : ResponseUtil.error("删除失败");
             } catch (Exception e) {
                 e.printStackTrace();
