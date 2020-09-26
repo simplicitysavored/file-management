@@ -11,6 +11,7 @@ import xyz.yuanjin.project.common.dto.ResponseDTO;
 import xyz.yuanjin.project.common.util.FileUtil;
 import xyz.yuanjin.project.common.util.ResponseUtil;
 import xyz.yuanjin.project.common.util.UnitUtils;
+import xyz.yuanjin.project.pojo.dto.YjFile;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -43,14 +44,14 @@ public class UploadController {
         try {
             InputStream is = file.getInputStream();
 
-            File destFile = new File(position + File.separator + fileName);
+            YjFile destFile = new YjFile(position + File.separator + fileName);
             if (destFile.exists()) {
                 return ResponseUtil.error("已存在同名的文件").toString();
             }
 
-            destFile = new File(destFile.getAbsolutePath() + SUFFIX_DOWNLOADING);
+            destFile = new YjFile(destFile.getAbsolutePath() + SUFFIX_DOWNLOADING);
 
-            FileOutputStream fos = new FileOutputStream(destFile, destFile.exists());
+            FileOutputStream fos = new FileOutputStream(destFile.getSourceFile(), destFile.exists());
 
             byte[] bytes = new byte[1024 * 100];
             int length;
@@ -65,7 +66,7 @@ public class UploadController {
 
             if (isLastSnippet) {
                 log.info("正在保存最后一个片段");
-                FileUtil.rename(destFile, new File(destFile.getAbsolutePath().substring(0, destFile.getAbsolutePath().indexOf(SUFFIX_DOWNLOADING))));
+                FileUtil.rename(destFile.getSourceFile(), new File(destFile.getAbsolutePath().substring(0, destFile.getAbsolutePath().indexOf(SUFFIX_DOWNLOADING))));
             }
 
         } catch (Exception e) {

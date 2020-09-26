@@ -6,8 +6,10 @@
             LF: listen folder
             RT: root
         -->
-        <item id="LF00RT001" alias="临时资源库">/Volumes/Repository/临时</item>
+        <item id="LF00RT000" alias="Repository">/Volumes/Repository</item>
+<!--        <item id="LF00RT001" alias="临时资源库">/Volumes/Repository/临时</item>-->
         <item id="LF00RT003" alias="本机文档">/Users/yuanjin/Documents</item>
+        <item id="LF00RT004" alias="Java文件">/Users/yuanjin/workspace/ideaProjects/github/jinn-common/src/main/java/xyz/yuanjin/project/common/util</item>
     </listen-folder>
 
 <!--保护的文件：规则配置-->
