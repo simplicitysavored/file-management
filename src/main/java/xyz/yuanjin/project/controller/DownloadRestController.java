@@ -66,7 +66,7 @@ public class DownloadRestController {
             response.setHeader("Content-Disposition", "attachment;fileName=" + formFileName);
 
             FileInputStream fis = new FileInputStream(file.getSourceFile());
-            byte[] bytes = new byte[102400];
+            byte[] bytes = new byte[1024 * 1024];
             int length;
             while ((length = fis.read(bytes)) != -1) {
                 response.getOutputStream().write(bytes, 0, length);

@@ -223,8 +223,10 @@ const AjaxUtil = {
              */
             processBarDom: options.processBarDom,
             skip: AjaxUtil.alterEmpty(options.skip, 0),
-            blockSize: AjaxUtil.alterEmpty(options.blockSize, (1024 * 1024))
+            blockSize: AjaxUtil.alterEmpty(options.blockSize, (1024 * 1024)),
+            index: Number(AjaxUtil.alterEmpty(options.index, 0)) + 1
         };
+        console.log('conf: ', conf);
         console.log('processBarDom: ', options.processBarDom);
         // 初始化一个FormData对象
         let formData = new FormData();
@@ -233,6 +235,8 @@ const AjaxUtil = {
         // 截取 部分文件 块
         let fileData = conf.file.slice(conf.skip * conf.blockSize, nextSize);
         // 将 部分文件 塞入FormData
+        formData.append("skip", conf.skip);
+
         formData.append("uploadFile", fileData);
         // 保存位置
         formData.append("position", conf.position);
@@ -330,7 +334,7 @@ const AjaxUtil = {
             let percent = now * 100.0 / this.conf.max;
             percent = percent.toFixed(2);
             // console.log(percent);
-            console.log('update this.dom: ',this.dom);
+            console.log('update this.dom: ', this.dom);
             let subDom = this.dom.find("div[role=progressbar]").eq(0);
             console.log('update subDom: ', subDom);
             // console.log(subDom);
@@ -353,7 +357,7 @@ const AjaxUtil = {
             let time = new Date().getTime();
             if (time - this.timestamp >= this.conf.delay) {
                 this.timestamp = time;
-                console.log('update process bar: '+now);
+                console.log('update process bar: ' + now);
                 this.update(now);
             }
         },

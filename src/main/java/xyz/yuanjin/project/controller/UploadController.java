@@ -39,7 +39,8 @@ public class UploadController {
     String uploadBySplit(@RequestParam("uploadFile") MultipartFile file,
                          @RequestParam(value = "position", defaultValue = "/Users/yuanjin/Downloads/tmp") String position,
                          @RequestParam(value = "fileName", defaultValue = "tmpFile") String fileName,
-                         @RequestParam(value = "isLastSnippet", defaultValue = "false") Boolean isLastSnippet) {
+                         @RequestParam(value = "isLastSnippet", defaultValue = "false") Boolean isLastSnippet,
+                         @RequestParam(value = "skip", defaultValue = "1") Integer skip) {
 
         try {
             InputStream is = file.getInputStream();
@@ -50,6 +51,11 @@ public class UploadController {
             }
 
             destFile = new YjFile(destFile.getAbsolutePath() + SUFFIX_DOWNLOADING);
+//            if (skip == 1) {
+//                if (destFile.exists()) {
+//                    return ResponseUtil.error("文件已存在：" + destFile.getSourceFile().getAbsolutePath()).toString();
+//                }
+//            }
 
             FileOutputStream fos = new FileOutputStream(destFile.getSourceFile(), destFile.exists());
 
@@ -65,8 +71,8 @@ public class UploadController {
 
 
             if (isLastSnippet) {
-                log.info("正在保存最后一个片段");
-                FileUtil.rename(destFile.getSourceFile(), new File(destFile.getAbsolutePath().substring(0, destFile.getAbsolutePath().indexOf(SUFFIX_DOWNLOADING))));
+                log.info("正在保存最后一个片段,保存到：{}", destFile.getSourceFile().getAbsolutePath().substring(0, destFile.getSourceFile().getAbsolutePath().indexOf(SUFFIX_DOWNLOADING)));
+                FileUtil.rename(destFile.getSourceFile(), new File(destFile.getSourceFile().getAbsolutePath().substring(0, destFile.getSourceFile().getAbsolutePath().indexOf(SUFFIX_DOWNLOADING))));
             }
 
         } catch (Exception e) {
