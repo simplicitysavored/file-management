@@ -14,18 +14,19 @@ import java.util.List;
 /**
  * @author yuanjin
  */
+@Deprecated
 @RestController
 public class LoadFileRestController {
     @Resource
     private FileManagementService fileManagementService;
-
-    /**
+/*
+    *//**
      * 暂时没有用到
      *
      * @param path 文件绝对路径
      * @return JsonString of List<FolderBean>
      * @throws Exception 异常
-     */
+     *//*
     @GetMapping(value = "/file", produces = "application/json;charset=utf8")
     public String file(@RequestParam(value = "path", required = false) String path) throws Exception {
         if (null != path) {
@@ -57,6 +58,6 @@ public class LoadFileRestController {
         }
 
         return JSON.toJSONString(listenDrivers);
-    }
+    }*/
 
 }

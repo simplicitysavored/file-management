@@ -121,9 +121,6 @@ public class SystemUtil implements ApplicationContextAware {
      */
     public static void printSystemLink() {
         Map<String, String> map = getAllNetIpv4AddrMap();
-        map.forEach((key, value) -> {
-            System.out.format("%s%s:%s%s", "http://", value, systemProperty().getServerPort(), systemProperty().getContextPath());
-            System.out.println();
-        });
+        map.forEach((key, value) -> System.out.format("%s%s:%s%s\n", "http://", value, systemProperty().getServerPort(), systemProperty().getContextPath()));
     }
 }

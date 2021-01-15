@@ -22,22 +22,23 @@ import java.util.List;
  */
 @Service
 public class FileManagementService {
-
+/*
+    @Deprecated
     public File newFile(String path) {
         return new File(SystemUtil.systemProperty().getNasListenFileList()[0].concat(path));
-    }
-
+    }*/
+/*
     @Deprecated
     public FolderBean loadFolder(File file) throws Exception {
         return loadFolder(file, false);
     }
 
-    /**
+    *//**
      * @param file    文件夹
      * @param dotBack 是否使用 .. 返回上一层
      * @return {FolderBean}
      * @throws Exception 异常
-     */
+     *//*
     @Deprecated
     public FolderBean loadFolder(File file, Boolean dotBack) throws Exception {
         if (!file.exists()) {
@@ -91,7 +92,7 @@ public class FileManagementService {
 
 
         return folderBean;
-    }
+    }*/
     /**
      * @param file    文件夹
      * @param dotBack 是否使用 .. 返回上一层

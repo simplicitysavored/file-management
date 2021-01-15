@@ -18,21 +18,25 @@ public class SystemProperty {
     @Value("${server.port}")
     private String serverPort;
 
-    @Value("#{'${xyz.yuanjin.nas.listen-drivers}'.split('\\s+')}")
-    private String[] nasListenFileList;
+//    @Deprecated
+//    @Value("#{'${xyz.yuanjin.nas.listen-drivers}'.split('\\s+')}")
+//    private String[] nasListenFileList;
 
-    @Value("#{'${xyz.yuanjin.nas.protect-file-regular.regexp}'.split('\\s+')}")
-    private String[] nasProtectFileRules;
+//    @Deprecated
+//    @Value("#{'${xyz.yuanjin.nas.protect-file-regular.regexp}'.split('\\s+')}")
+//    private String[] nasProtectFileRules;
 
-    private Pattern[] nasProtectFilePatterns;
+//    @Deprecated
+//    private Pattern[] nasProtectFilePatterns;
 
-    public Pattern[] getNasProtectFilePatterns() {
-        if (nasProtectFilePatterns == null) {
-            nasProtectFilePatterns = new Pattern[nasProtectFileRules.length];
-            for (int i = 0; i < nasProtectFileRules.length; i++) {
-                nasProtectFilePatterns[i] = Pattern.compile(nasProtectFileRules[i]);
-            }
-        }
-        return nasProtectFilePatterns;
-    }
+//    @Deprecated
+//    public Pattern[] getNasProtectFilePatterns() {
+//        if (nasProtectFilePatterns == null) {
+//            nasProtectFilePatterns = new Pattern[nasProtectFileRules.length];
+//            for (int i = 0; i < nasProtectFileRules.length; i++) {
+//                nasProtectFilePatterns[i] = Pattern.compile(nasProtectFileRules[i]);
+//            }
+//        }
+//        return nasProtectFilePatterns;
+//    }
 }

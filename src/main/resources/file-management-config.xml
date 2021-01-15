@@ -11,6 +11,7 @@
         <item id="LF00RT003" alias="本机文档">/Users/yuanjin/Documents</item>
         <item id="LF00RT004" alias="Java文件">/Users/yuanjin/workspace/ideaProjects/github/jinn-common/src/main/java/xyz/yuanjin/project/common/util</item>
         <item id="LF00RT005" alias="我的下载">/Users/yuanjin/Downloads</item>
+        <item id="LF00RT006" alias="文件管理器测试">D:\文件管理器测试</item>
     </listen-folder>
 
 <!--保护的文件：规则配置-->

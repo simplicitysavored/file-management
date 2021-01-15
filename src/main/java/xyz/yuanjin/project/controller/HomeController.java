@@ -54,6 +54,7 @@ public class HomeController {
      * @return 页面
      * @throws Exception 异常
      */
+/*
     @GetMapping(value = "/nas", produces = "application/json;charset=utf8")
     public String file(@RequestParam(value = "path") String path, Model model) throws Exception {
         File file = fileManagementService.checkFilePath(path);
@@ -65,6 +66,7 @@ public class HomeController {
         model.addAttribute("CURRENT_POSITION_FOLDER", path);
         return "driverItem";
     }
+*/
 
     /**
      * 创建文件夹

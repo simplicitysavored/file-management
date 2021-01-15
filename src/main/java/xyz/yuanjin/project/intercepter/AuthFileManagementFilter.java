@@ -26,7 +26,7 @@ public class AuthFileManagementFilter implements HandlerInterceptor {
             token = request.getParameter("token");
         }
 
-        log.info("preHandle remote uri: {}, token: {}", request.getRequestURI(), token);
+        log.debug("preHandle remote uri: {}, token: {}", request.getRequestURI(), token);
 
         String uri = request.getRequestURI();
         if (uri.startsWith("/login") || uri.startsWith("/loginCheck") || uri.startsWith("/error") || uri.startsWith("/static")) {
@@ -44,11 +44,11 @@ public class AuthFileManagementFilter implements HandlerInterceptor {
     @Override
     public void postHandle(HttpServletRequest request, HttpServletResponse response, Object handler, ModelAndView modelAndView) throws Exception {
 
-        log.info("postHandle execute");
+        log.debug("postHandle execute");
     }
 
     @Override
     public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex) throws Exception {
-        log.info("afterCompletion execute");
+        log.debug("afterCompletion execute");
     }
 }

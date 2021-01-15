@@ -88,25 +88,26 @@ public class SystemConfig {
         Element listenEl = rootEl.element("listen-folder");
         List<Element> listenItemEl = listenEl.elements("item");
         listenItemEl.forEach(itemEl -> {
-            String value = itemEl.getTextTrim();
-            File file = new File(value);
+            String lfId = itemEl.attributeValue("id");
+            String lfPath = itemEl.getTextTrim();
+            File file = new File(lfPath);
             if (file.exists()) {
-                listenFolderStrList.add(value);
+                listenFolderStrList.add(lfPath);
                 listenFolderList.add(file);
-                String id = itemEl.attributeValue("id");
-                if (null == id || listenFolderIdMap.containsKey(id)) {
+                if (null == lfId || listenFolderIdMap.containsKey(lfId)) {
                     throw new NullPointerException("监听驱动必须要有唯一的id");
                 }
                 String alias = itemEl.attributeValue("alias");
                 if (alias == null) {
-                    alias = value;
+                    alias = lfPath;
                 }
                 listenFolderAliasMap.put(alias, file);
-                listenFolderIdMap.put(id, file);
-                listenFolderIdAliasMap.put(id, alias);
-                listenFolderPathIdMap.put(file.getAbsolutePath(), id);
+                listenFolderIdMap.put(lfId, file);
+                listenFolderIdAliasMap.put(lfId, alias);
+                listenFolderPathIdMap.put(file.getAbsolutePath(), lfId);
+                log.info("加载监听目录成功：{} => {}", lfId, lfPath);
             } else {
-                log.error("系统配置失效，监听路径不存在：{}", itemEl.getTextTrim());
+                log.info("加载监听目录失败：{} => {}", lfId, lfPath);
             }
         });
 
