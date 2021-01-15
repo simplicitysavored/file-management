@@ -74,19 +74,6 @@ public class BaseBean {
     public BaseBean() {
     }
 
-    @Deprecated
-    private void initialAuto(File file) throws UnsupportedEncodingException {
-        this.name = file.getName();
-        this.absolutePath = file.getAbsolutePath();
-        this.absolutePathEncode = URLEncoder.encode(file.getAbsolutePath(), StandardCharsets.UTF_8.name());
-        this.lastModifyDate = new Date(file.lastModified());
-        this.folder = file.isDirectory();
-        this.video = FileUtil.isVideo(file);
-        this.canRead = file.canRead();
-        this.canWrite = file.canWrite();
-        this.hidden = file.isHidden();
-    }
-
     private void initialAuto(YjFile file) throws UnsupportedEncodingException {
         this.name = file.getName();
         this.absolutePath = file.getAbsolutePath();
@@ -97,28 +84,6 @@ public class BaseBean {
         this.canRead = file.canRead();
         this.canWrite = file.canWrite();
         this.hidden = file.isHidden();
-    }
-
-    @Deprecated
-    public static BaseBean initialByFile(Class<? extends BaseBean> clz, File file) throws IllegalAccessException, InstantiationException, UnsupportedEncodingException {
-        BaseBean baseBean = clz.newInstance();
-        baseBean.initialAuto(file);
-
-        File prev = file.getParentFile();
-
-        if (null != prev) {
-            baseBean.setPreviousName(prev.getName());
-            File prevParent = prev.getParentFile();
-            if (null != prevParent) {
-                baseBean.setPreAbsolutePath(prevParent.getAbsolutePath());
-                baseBean.setPreAbsolutePathEncode(URLEncoder.encode(prevParent.getAbsolutePath(), StandardCharsets.UTF_8.name()));
-            }
-
-            baseBean.setPreviousUrl("/nas?path=" + URLEncoder.encode(prev.getAbsolutePath(), StandardCharsets.UTF_8.name()));
-            baseBean.setProtect(SystemUtil.isProtectFile(file));
-        }
-
-        return baseBean;
     }
 
     public static BaseBean initialByFile(Class<? extends BaseBean> clz, YjFile file) throws IllegalAccessException, InstantiationException, UnsupportedEncodingException {
@@ -154,26 +119,6 @@ public class BaseBean {
         return baseBean;
     }
 
-
-    @Deprecated
-    public static BaseBean newBaseBeanOfDotBack(File file) throws UnsupportedEncodingException {
-        BaseBean baseBean = new BaseBean();
-        baseBean.initialAuto(file);
-
-        File parent = file.getParentFile();
-
-        if (null != parent) {
-            baseBean.setName("..");
-            baseBean.setAbsolutePath(parent.getAbsolutePath());
-            baseBean.setAbsolutePathEncode(URLEncoder.encode(parent.getAbsolutePath(), StandardCharsets.UTF_8.name()));
-            baseBean.setFolder(true);
-            baseBean.setHidden(false);
-        } else {
-            baseBean.setHidden(true);
-        }
-        return baseBean;
-
-    }
 
     public static BaseBean newBaseBeanOfDotBack(YjFile file) throws UnsupportedEncodingException {
         Map<String, File> idMap = SystemConfig.getInstance().getListenFolderIdMap();

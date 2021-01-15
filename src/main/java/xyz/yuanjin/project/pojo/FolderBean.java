@@ -30,15 +30,6 @@ public class FolderBean extends BaseBean {
      */
     private String parentPath;
 
-    @Deprecated
-    public static FolderBean initialByFile(File file) throws InstantiationException, IllegalAccessException, UnsupportedEncodingException {
-        Assert.isTrue(file.isDirectory(), "这不是一个文件夹：" + file.getAbsolutePath());
-        FolderBean bean = (FolderBean) BaseBean.initialByFile(FolderBean.class, file);
-        bean.setNextUrl("/file?path="+ URLEncoder.encode(file.getAbsolutePath(), "UTF-8"));
-        bean.setParentPath(file.getParent());
-        return bean;
-    }
-
     public static FolderBean initialByFile(YjFile file) throws InstantiationException, IllegalAccessException, UnsupportedEncodingException {
         Assert.isTrue(file.isDirectory(), "这不是一个文件夹：" + file.getAbsolutePath());
         FolderBean bean = (FolderBean) BaseBean.initialByFile(FolderBean.class, file);
