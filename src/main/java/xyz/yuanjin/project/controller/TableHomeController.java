@@ -6,6 +6,7 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 import xyz.yuanjin.project.common.dto.ResponseDTO;
 import xyz.yuanjin.project.common.enums.ResponseEnum;
+import xyz.yuanjin.project.common.util.ArrayUtils;
 import xyz.yuanjin.project.common.util.FileUtil;
 import xyz.yuanjin.project.common.util.ResponseUtil;
 import xyz.yuanjin.project.pojo.FolderBean;
@@ -19,6 +20,7 @@ import xyz.yuanjin.project.service.FileManagementService;
 import javax.annotation.Resource;
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 @Slf4j
@@ -119,28 +121,40 @@ public class TableHomeController {
      */
     @PostMapping("/delete")
     public @ResponseBody
-    ResponseDTO delete(@RequestParam("path") String path) {
-        YjFile file = new YjFile(path);
+    ResponseDTO delete(@RequestParam(value = "pathList[]", defaultValue = "") String[] pathArr) {
+        List<YjFile> yjFileList = new ArrayList<>();
+        for (String path : pathArr) {
+            YjFile file = new YjFile(path);
 
-        if (file.isListenRoot()) {
-            return ResponseUtil.error("监听跟路径，不可删除");
-        }
+            if (file.exists()) {
+                if (file.isListenRoot()) {
+                    return ResponseUtil.error("监听跟路径，不可删除");
+                }
 
-        if (fileManagementService.isProtectFile(file)) {
-            return ResponseUtil.error("文件受保护，不可删除");
-        }
-
-        if (file.exists()) {
-            try {
-                boolean success = FileUtil.delete(file.getSourceFile());
-//                boolean success = false;
-                return success ? ResponseUtil.success() : ResponseUtil.error("删除失败");
-            } catch (Exception e) {
-                e.printStackTrace();
-                return ResponseUtil.error(e.getMessage());
+                if (fileManagementService.isProtectFile(file)) {
+                    return ResponseUtil.error("文件受保护，不可删除");
+                }
+                yjFileList.add(file);
+            } else {
+                return ResponseUtil.error("文件未找到，不可删除[" + path + "]");
             }
         }
-        log.error("未找到文件：{}", path);
-        return ResponseUtil.error("未找到文件");
+        for (YjFile file : yjFileList) {
+
+            if (file.exists()) {
+                try {
+                    boolean success = FileUtil.delete(file.getSourceFile());
+                    if (!success) {
+                        return ResponseUtil.error("删除失败[" + file.getPath() + "]");
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    return ResponseUtil.error(e.getMessage());
+                }
+            }
+
+        }
+
+        return ResponseUtil.success();
     }
 }
