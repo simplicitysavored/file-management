@@ -37,7 +37,7 @@ public class TableHomeController {
      */
     @RequestMapping("")
     public String table() {
-        return "/table";
+        return "table";
     }
 
     @PostMapping("/getListenList")

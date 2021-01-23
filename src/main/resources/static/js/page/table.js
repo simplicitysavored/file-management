@@ -314,7 +314,7 @@ function downloadFileV2() {
         return false;
     }
 
-    alert(rows[0].absolutePath);
+    //alert(rows[0].absolutePath);
 
     //window.open("/downloadV2?token="+localStorage.getItem('token')+"&path="+rows[0].absolutePathEncode, "_blank")
 
