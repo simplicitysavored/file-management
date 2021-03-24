@@ -6,6 +6,7 @@ import java.util.Arrays;
 
 /**
  * 抓取图片：https://wall.alphacoders.com/finding_wallpapers.php?lang=Chinese
+ * @author yuanjin
  */
 public class GrabPicturesTool {
 

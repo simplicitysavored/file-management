@@ -71,57 +71,63 @@ public class SystemConfig {
     }
 
     private void loadSystemConfig() throws IOException, DocumentException {
-        InputStream in = SystemConfig.class.getClassLoader().getResourceAsStream("file-management-config.xml");
-        if (in == null) {
-            log.error("系统配置初始化失败，请检查配置：{}", "file-management-config.xml");
-            return;
-        }
-        ByteArrayOutputStream bos = new ByteArrayOutputStream();
-        byte[] bytes = new byte[1024];
-        int length;
-        while ((length = in.read(bytes)) != -1) {
-            bos.write(bytes, 0, length);
-        }
-        String configXmlString = bos.toString();
-        Document document = DocumentHelper.parseText(configXmlString);
-        Element rootEl = document.getRootElement();
-        Element listenEl = rootEl.element("listen-folder");
-        List<Element> listenItemEl = listenEl.elements("item");
-        listenItemEl.forEach(itemEl -> {
-            String lfId = itemEl.attributeValue("id");
-            String lfPath = itemEl.getTextTrim();
-            File file = new File(lfPath);
-            if (file.exists()) {
-                listenFolderStrList.add(lfPath);
-                listenFolderList.add(file);
-                if (null == lfId || listenFolderIdMap.containsKey(lfId)) {
-                    throw new NullPointerException("监听驱动必须要有唯一的id");
-                }
-                String alias = itemEl.attributeValue("alias");
-                if (alias == null) {
-                    alias = lfPath;
-                }
-                listenFolderAliasMap.put(alias, file);
-                listenFolderIdMap.put(lfId, file);
-                listenFolderIdAliasMap.put(lfId, alias);
-                listenFolderPathIdMap.put(file.getAbsolutePath(), lfId);
-                log.info("加载监听目录成功：{} => {}", lfId, lfPath);
-            } else {
-                log.info("加载监听目录失败：{} => {}", lfId, lfPath);
+        String fileName = "file-management-config.xml";
+        log.info("系统开始加载配置，路径：src/main/resources/{}", fileName);
+        try (InputStream inputStream = SystemConfig.class.getClassLoader().getResourceAsStream(fileName);
+             ByteArrayOutputStream bos = new ByteArrayOutputStream();) {
+
+            if (inputStream == null) {
+                log.error("系统配置初始化失败，请检查配置：{}", "file-management-config.xml");
+                return;
             }
-        });
+            byte[] bytes = new byte[1024];
+            int length;
+            while ((length = inputStream.read(bytes)) != -1) {
+                bos.write(bytes, 0, length);
+            }
+            String configXmlString = bos.toString();
+            Document document = DocumentHelper.parseText(configXmlString);
+            Element rootEl = document.getRootElement();
+            Element listenEl = rootEl.element("listen-folder");
+            List<Element> listenItemEl = listenEl.elements("item");
+            listenItemEl.forEach(itemEl -> {
+                String lfId = itemEl.attributeValue("id");
+                String lfPath = itemEl.getTextTrim();
+                File file = new File(lfPath);
+                if (file.exists()) {
+                    listenFolderStrList.add(lfPath);
+                    listenFolderList.add(file);
+                    if (null == lfId || listenFolderIdMap.containsKey(lfId)) {
+                        throw new NullPointerException("监听驱动必须要有唯一的id");
+                    }
+                    String alias = itemEl.attributeValue("alias");
+                    if (alias == null) {
+                        alias = lfPath;
+                    }
+                    listenFolderAliasMap.put(alias, file);
+                    listenFolderIdMap.put(lfId, file);
+                    listenFolderIdAliasMap.put(lfId, alias);
+                    listenFolderPathIdMap.put(file.getAbsolutePath(), lfId);
+                    log.info("加载监听目录成功：{} => {}", lfId, lfPath);
+                } else {
+                    log.error("加载监听目录失败：{} => {}", lfId, lfPath);
+                }
+            });
 
-        Element protectFileEl = rootEl.element("protect-file");
+            Element protectFileEl = rootEl.element("protect-file");
 
-        Element pathEl = protectFileEl.element("path");
-        List<Element> pathItemEls = pathEl.elements("item");
-        pathItemEls.forEach(item -> this.protectConfig.getFilePath().add(item.getTextTrim()));
+            Element pathEl = protectFileEl.element("path");
+            List<Element> pathItemEls = pathEl.elements("item");
+            pathItemEls.forEach(item -> this.protectConfig.getFilePath().add(item.getTextTrim()));
 
-        Element regexEl = protectFileEl.element("file-path-regex");
-        List<Element> regexItmEls = regexEl.elements("item");
-        regexItmEls.forEach(item -> this.protectConfig.getFilePathRegexList().add(Pattern.compile(item.getTextTrim())));
+            Element regexEl = protectFileEl.element("file-path-regex");
+            List<Element> regexItmEls = regexEl.elements("item");
+            regexItmEls.forEach(item -> this.protectConfig.getFilePathRegexList().add(Pattern.compile(item.getTextTrim())));
 
-        bos.close();
-        in.close();
+        } finally {
+
+        }
+//        bos.close();
+//        inputStream.close();
     }
 }
