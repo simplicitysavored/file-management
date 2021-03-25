@@ -37,6 +37,7 @@ public class TableHomeController {
      */
     @RequestMapping("")
     public String table() {
+        log.info("加载页面....");
         return "table";
     }
 

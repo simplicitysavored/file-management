@@ -12,10 +12,7 @@ import xyz.yuanjin.project.property.SystemProperty;
 import java.io.File;
 import java.net.InetAddress;
 import java.net.NetworkInterface;
-import java.util.Enumeration;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 import java.util.regex.Pattern;
 
 /**
@@ -93,7 +90,7 @@ public class SystemUtil implements ApplicationContextAware {
      * @return Map
      */
     public static Map<String, String> getAllNetIpv4AddrMap() {
-        Map<String, String> map = new HashMap<>();
+        Map<String, String> map = new TreeMap<>();
         Enumeration<NetworkInterface> netInterfaces;
         try {
             // 拿到所有网卡
@@ -121,6 +118,8 @@ public class SystemUtil implements ApplicationContextAware {
      */
     public static void printSystemLink() {
         Map<String, String> map = getAllNetIpv4AddrMap();
+        map.put("self_custom1", "127.0.0.1");
+        map.put("self_custom2", "localhost");
         map.forEach((key, value) -> System.out.format("%s%s:%s%s\n", "http://", value, systemProperty().getServerPort(), systemProperty().getContextPath()));
     }
 }
